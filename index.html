@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Huey Luey's – Reservations</title>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange:#FF6B0B;--orange-dk:#C55A1B;--green:#648B1A;--green-dk:#3A7D44;
+  --cream:#FFFDF7;--warm:#F5F0E8;--border:#E0D8CC;--text:#2A2220;
+  --muted:#8A7F75;--red:#C0574A;--gray:#9A9590;--purple:#7B5EA7;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Oswald',sans-serif;background:#1C1814;min-height:100vh;color:var(--text);}
+
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1C1814;position:relative;overflow:hidden;}
+#login-screen::before{content:’’;position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,107,11,.13) 0%,transparent 60%);pointer-events:none;}
+.login-brand{text-align:center;margin-bottom:32px;position:relative;z-index:2;}
+.login-brand-name{font-family:‘Alfa Slab One’,serif;font-size:36px;color:var(–orange);letter-spacing:.04em;text-transform:uppercase;line-height:1;}
+.login-brand-sub{font-weight:300;font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:4px;}
+.login-card{position:relative;z-index:2;background:#252018;border:1px solid rgba(255,107,11,.2);border-radius:12px;padding:32px 36px 28px;width:320px;display:flex;flex-direction:column;align-items:center;gap:22px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.login-title{font-weight:600;font-size:10px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.pin-dots{display:flex;gap:12px;}
+.pin-dot{width:13px;height:13px;border-radius:50%;border:2px solid rgba(255,107,11,.3);background:transparent;transition:all .15s;}
+.pin-dot.filled{background:var(–orange);border-color:var(–orange);box-shadow:0 0 10px rgba(255,107,11,.5);}
+.pin-dot.error{border-color:var(–red);background:var(–red);}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:100%;}
+.key-btn{background:#2E2820;border:1px solid rgba(255,255,255,.07);border-radius:8px;color:#fff;font-family:‘Oswald’,sans-serif;font-weight:600;font-size:20px;padding:13px 0;cursor:pointer;transition:all .1s;user-select:none;-webkit-tap-highlight-color:transparent;}
+.key-btn:hover{background:#3A3028;border-color:rgba(255,107,11,.3);}
+.key-btn:active{background:var(–orange);transform:scale(.95);}
+.key-btn.del{font-size:13px;color:rgba(255,255,255,.45);letter-spacing:.1em;}
+.key-btn.zero{grid-column:2;}
+.login-error{font-weight:400;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(–red);min-height:16px;text-align:center;transition:opacity .3s;opacity:0;}
+.login-error.show{opacity:1;}
+
+/* APP */
+#app{display:none;flex-direction:column;min-height:100vh;background:var(–cream);}
+.stripe{display:flex;height:8px;flex-shrink:0;}
+.stripe span{flex:1;background:var(–orange);}
+.stripe span:nth-child(even){background:var(–green);}
+
+/* HEADER */
+.app-header{background:#fff;border-bottom:2px solid var(–orange);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,.06);gap:12px;}
+.app-brand-name{font-family:‘Alfa Slab One’,serif;font-size:18px;color:var(–orange);letter-spacing:.04em;text-transform:uppercase;line-height:1;}
+.app-brand-sub{font-weight:300;font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:var(–green);}
+.app-center{text-align:center;flex:1;}
+.app-doc-title{font-family:‘Alfa Slab One’,serif;font-size:16px;color:var(–text);letter-spacing:.05em;text-transform:uppercase;}
+.week-nav{display:flex;align-items:center;gap:8px;margin-top:3px;justify-content:center;}
+.nav-btn{background:none;border:1px solid var(–border);border-radius:4px;color:var(–muted);cursor:pointer;font-size:13px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.nav-btn:hover{border-color:var(–orange);color:var(–orange);}
+.week-lbl{font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(–text);min-width:210px;text-align:center;}
+.today-btn{background:var(–orange);color:#fff;border:1px solid var(–orange);border-radius:4px;font-family:‘Oswald’,sans-serif;font-weight:700;font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:3px 9px;cursor:pointer;transition:all .15s;}
+.today-btn:hover{background:var(–orange-dk);}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.mgr-badge{font-weight:600;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(–muted);}
+.mgr-badge span{color:var(–orange);font-weight:700;}
+.hdr-btns{display:flex;gap:6px;}
+.hdr-btn{background:none;border:1px solid var(–border);border-radius:4px;color:var(–muted);cursor:pointer;font-family:‘Oswald’,sans-serif;font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:4px 9px;transition:all .15s;}
+.hdr-btn:hover{border-color:var(–orange);color:var(–orange);}
+.hdr-btn.danger:hover{border-color:var(–red);color:var(–red);}
+
+/* TABS */
+.tab-bar{display:flex;background:#fff;border-bottom:1px solid var(–border);padding:0 20px;flex-shrink:0;}
+.tab{font-weight:600;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(–muted);padding:9px 16px;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px;}
+.tab.active{color:var(–orange);border-bottom-color:var(–orange);}
+.tab:hover:not(.active){color:var(–text);}
+
+/* WEEK VIEW */
+#week-view{flex:1;overflow:auto;}
+.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0;padding:10px 8px;align-items:start;}
+.day-col{display:flex;flex-direction:column;border:1px solid var(–border);border-radius:6px;overflow:hidden;margin:0 3px;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.05);}
+.day-header{padding:7px 7px 5px;text-align:center;}
+.day-col.res-day .day-header{background:var(–orange);}
+.day-col.exp-day .day-header{background:var(–green);}
+.dh-name{font-family:‘Alfa Slab One’,serif;font-size:11px;color:#fff;text-transform:uppercase;letter-spacing:.04em;line-height:1;}
+.dh-date{font-weight:300;font-size:8px;color:rgba(255,255,255,.75);letter-spacing:.1em;margin-top:1px;}
+.dh-type{font-weight:400;font-size:7px;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.18em;margin-top:1px;}
+.slot-list{display:flex;flex-direction:column;padding:5px;gap:4px;}
+.res-slot{background:var(–warm);border:1px solid var(–border);border-radius:5px;padding:5px 6px 5px;cursor:pointer;transition:all .15s;position:relative;min-height:68px;}
+.res-slot:hover{border-color:var(–orange);box-shadow:0 2px 8px rgba(255,107,11,.12);}
+.day-col.exp-day .res-slot:hover{border-color:var(–green);}
+.res-slot.has-data{background:#fff;border-color:#D0C8BC;}
+.day-col.res-day .res-slot.has-data{border-left:3px solid var(–orange);}
+.day-col.exp-day .res-slot.has-data{border-left:3px solid var(–green);}
+.res-slot.status-noshow{border-left-color:var(–red)!important;opacity:.75;}
+.res-slot.status-cancelled{border-left-color:var(–gray)!important;opacity:.6;}
+.slot-time-badge{position:absolute;top:4px;right:4px;font-weight:700;font-size:9px;color:#fff;background:var(–orange);border-radius:3px;padding:1px 4px;}
+.day-col.exp-day .slot-time-badge{background:var(–green);}
+.slot-status-badge{position:absolute;bottom:4px;right:4px;font-weight:700;font-size:7px;border-radius:3px;padding:1px 4px;text-transform:uppercase;letter-spacing:.06em;}
+.slot-status-badge.noshow{background:#fde8e6;color:var(–red);}
+.slot-status-badge.cancelled{background:#eee;color:var(–gray);}
+.slot-name{font-weight:700;font-size:11.5px;color:var(–text);text-transform:uppercase;letter-spacing:.03em;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.slot-detail{font-weight:400;font-size:8.5px;color:var(–muted);margin-top:1px;}
+.slot-detail strong{font-weight:600;color:var(–text);}
+.slot-tags{display:flex;gap:3px;margin-top:3px;flex-wrap:wrap;}
+.slot-tag{font-weight:600;font-size:6.5px;border-radius:3px;padding:1px 4px;letter-spacing:.06em;text-transform:uppercase;}
+.slot-tag.kids{color:var(–orange);border:1px solid var(–orange);}
+.day-col.exp-day .slot-tag.kids{color:var(–green);border-color:var(–green);}
+.slot-tag.occ{color:var(–purple);border:1px solid var(–purple);}
+.slot-tag.mgr{color:var(–muted);border:1px solid var(–border);}
+.add-slot-btn{display:flex;align-items:center;justify-content:center;gap:3px;background:none;border:1.5px dashed var(–border);border-radius:5px;color:var(–muted);cursor:pointer;font-family:‘Oswald’,sans-serif;font-weight:400;font-size:8px;letter-spacing:.18em;text-transform:uppercase;padding:6px 0;width:100%;transition:all .15s;margin:2px 0 4px;}
+.day-col.res-day .add-slot-btn:hover{border-color:var(–orange);color:var(–orange);}
+.day-col.exp-day .add-slot-btn:hover{border-color:var(–green);color:var(–green);}
+
+/* GUEST BOOK */
+#guestbook-view{display:none;flex:1;overflow:auto;padding:16px 20px;}
+.gb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.gb-title{font-family:‘Alfa Slab One’,serif;font-size:16px;color:var(–text);text-transform:uppercase;letter-spacing:.04em;}
+.gb-controls{display:flex;gap:8px;align-items:center;}
+.gb-search{border:1.5px solid var(–border);border-radius:6px;padding:7px 12px;font-family:‘Oswald’,sans-serif;font-size:13px;color:var(–text);background:var(–warm);outline:none;width:220px;transition:border-color .15s;}
+.gb-search:focus{border-color:var(–orange);}
+.gb-filter{border:1.5px solid var(–border);border-radius:6px;padding:7px 10px;font-family:‘Oswald’,sans-serif;font-size:11px;color:var(–text);background:var(–warm);outline:none;cursor:pointer;}
+.gb-table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,.07);}
+.gb-table th{background:var(–orange);color:#fff;font-weight:600;font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:9px 11px;text-align:left;}
+.gb-table td{padding:8px 11px;border-bottom:1px solid var(–border);font-size:12px;color:var(–text);vertical-align:middle;}
+.gb-table tr:last-child td{border-bottom:none;}
+.gb-table tr:hover td{background:var(–warm);cursor:pointer;}
+.td-muted{color:var(–muted);font-size:10px;}
+.gb-badge{display:inline-block;font-weight:700;font-size:7px;border-radius:3px;padding:2px 5px;letter-spacing:.06em;text-transform:uppercase;}
+.gb-badge.showed{background:#e8f5e9;color:var(–green-dk);}
+.gb-badge.noshow{background:#fde8e6;color:var(–red);}
+.gb-badge.cancelled{background:#eee;color:var(–gray);}
+.gb-badge.upcoming{background:#fff3e0;color:var(–orange-dk);}
+.gb-empty{text-align:center;padding:48px;color:var(–muted);font-size:10px;letter-spacing:.2em;text-transform:uppercase;}
+.gb-count{font-weight:400;font-size:10px;letter-spacing:.12em;color:var(–muted);text-transform:uppercase;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,16,12,.76);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(3px);}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:#fff;border-radius:12px;width:430px;max-width:96vw;max-height:92vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.4);transform:translateY(10px) scale(.97);transition:transform .2s ease;}
+.modal-overlay.open .modal{transform:translateY(0) scale(1);}
+.modal-hdr{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;}
+.modal-hdr.res{background:var(–orange);}
+.modal-hdr.exp{background:var(–green);}
+.modal-title-text{font-family:‘Alfa Slab One’,serif;font-size:14px;color:#fff;text-transform:uppercase;letter-spacing:.04em;}
+.modal-close{background:rgba(255,255,255,.2);border:none;border-radius:50%;color:#fff;cursor:pointer;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background .15s;}
+.modal-close:hover{background:rgba(255,255,255,.35);}
+.modal-body{padding:18px;display:flex;flex-direction:column;gap:12px;}
+.form-row{display:flex;gap:10px;}
+.form-group{display:flex;flex-direction:column;gap:4px;flex:1;}
+.form-label{font-weight:600;font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(–muted);}
+.form-input,.form-select{font-family:‘Oswald’,sans-serif;font-weight:400;font-size:13px;color:var(–text);border:1.5px solid var(–border);border-radius:6px;padding:8px 10px;background:var(–warm);outline:none;transition:border-color .15s,background .15s;width:100%;}
+.form-input:focus,.form-select:focus{border-color:var(–orange);background:#fff;}
+.sec-div{font-weight:700;font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:var(–orange);padding-bottom:4px;border-bottom:1px solid #FFE0CC;margin-top:2px;}
+.status-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.status-btn{border-radius:6px;border:1.5px solid var(–border);background:var(–warm);font-family:‘Oswald’,sans-serif;font-weight:600;font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:9px 4px;cursor:pointer;transition:all .15s;color:var(–muted);}
+.status-btn.active-confirmed{background:var(–green);border-color:var(–green);color:#fff;}
+.status-btn.active-noshow{background:var(–red);border-color:var(–red);color:#fff;}
+.status-btn.active-cancelled{background:var(–gray);border-color:var(–gray);color:#fff;}
+.mgr-info-box{background:var(–warm);border:1px solid var(–border);border-radius:6px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;}
+.mgr-info-label{font-weight:600;font-size:7.5px;letter-spacing:.2em;text-transform:uppercase;color:var(–muted);margin-bottom:1px;}
+.mgr-info-name{font-weight:700;font-size:14px;color:var(–orange);}
+.mgr-info-time{font-size:9px;color:var(–muted);letter-spacing:.05em;}
+.modal-actions{padding:0 18px 18px;display:flex;gap:8px;}
+.btn-save{flex:1;font-family:‘Oswald’,sans-serif;font-weight:700;font-size:11px;letter-spacing:.2em;text-transform:uppercase;border:none;border-radius:6px;padding:12px 0;cursor:pointer;transition:all .15s;}
+.btn-save.res{background:var(–orange);color:#fff;}
+.btn-save.res:hover{background:var(–orange-dk);}
+.btn-save.exp{background:var(–green);color:#fff;}
+.btn-save.exp:hover{background:var(–green-dk);}
+.btn-delete{font-family:‘Oswald’,sans-serif;font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;border:1.5px solid var(–red);background:none;border-radius:6px;padding:12px 14px;cursor:pointer;color:var(–red);transition:all .15s;}
+.btn-delete:hover{background:var(–red);color:#fff;}
+
+/* FOOTER */
+.app-footer{background:#fff;border-top:1px solid var(–border);padding:7px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.footer-legend{display:flex;gap:14px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:5px;}
+.legend-dot{width:9px;height:9px;border-radius:2px;}
+.legend-dot.or{background:var(–orange);} .legend-dot.gr{background:var(–green);}
+.legend-dot.rd{background:var(–red);} .legend-dot.gy{background:var(–gray);}
+.legend-text{font-weight:400;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(–muted);}
+.footer-credit{font-weight:300;font-size:7px;letter-spacing:.15em;text-transform:uppercase;color:#C0B8B0;}
+
+@media print{
+#login-screen,.tab-bar,.app-footer,.add-slot-btn,.hdr-btns,.today-btn,#guestbook-view{display:none!important;}
+#app{display:flex!important;}
+#week-view{display:block!important;overflow:visible;}
+body{background:#fff;}
+@page{size:11in 8.5in landscape;margin:.3in;}
+}
+</style>
+
+</head>
+<body>
+
+<!-- LOGIN -->
+
+<div id="login-screen">
+  <div class="login-brand">
+    <div class="login-brand-name">Huey Luey's</div>
+    <div class="login-brand-sub">Mexican Kitchen &amp; Margarita Bar</div>
+  </div>
+  <div class="login-card">
+    <div class="login-title">Manager Access</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="keypad">
+      <button class="key-btn" onclick="pressKey('1')">1</button>
+      <button class="key-btn" onclick="pressKey('2')">2</button>
+      <button class="key-btn" onclick="pressKey('3')">3</button>
+      <button class="key-btn" onclick="pressKey('4')">4</button>
+      <button class="key-btn" onclick="pressKey('5')">5</button>
+      <button class="key-btn" onclick="pressKey('6')">6</button>
+      <button class="key-btn" onclick="pressKey('7')">7</button>
+      <button class="key-btn" onclick="pressKey('8')">8</button>
+      <button class="key-btn" onclick="pressKey('9')">9</button>
+      <button class="key-btn zero" onclick="pressKey('0')">0</button>
+      <button class="key-btn del" onclick="pressDelete()">DEL</button>
+    </div>
+    <div class="login-error" id="login-error">Incorrect passcode</div>
+  </div>
+</div>
+
+<!-- APP -->
+
+<div id="app">
+  <div class="stripe"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+  <div class="app-header">
+    <div>
+      <div class="app-brand-name">Huey Luey's</div>
+      <div class="app-brand-sub">Mexican Kitchen &amp; Margarita Bar</div>
+    </div>
+    <div class="app-center">
+      <div class="app-doc-title">Reservation Manager</div>
+      <div class="week-nav">
+        <button class="nav-btn" onclick="changeWeek(-1)">&#8592;</button>
+        <div class="week-lbl" id="week-lbl">—</div>
+        <button class="nav-btn" onclick="changeWeek(1)">&#8594;</button>
+        <button class="today-btn" onclick="goToToday()">Today</button>
+      </div>
+    </div>
+    <div class="hdr-right">
+      <div class="mgr-badge">Manager: <span id="mgr-display">—</span></div>
+      <div class="hdr-btns">
+        <button class="hdr-btn" onclick="window.print()">&#128438; Print</button>
+        <button class="hdr-btn danger" onclick="logout()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab active" id="tab-week" onclick="switchTab('week')">Week View</div>
+    <div class="tab" id="tab-guests" onclick="switchTab('guests')">Guest Book</div>
+  </div>
+
+  <div id="week-view">
+    <div class="day-grid" id="day-grid"></div>
+  </div>
+
+  <div id="guestbook-view">
+    <div class="gb-header">
+      <div>
+        <div class="gb-title">Guest Book</div>
+        <div class="gb-count" id="gb-count">— reservations total</div>
+      </div>
+      <div class="gb-controls">
+        <select class="gb-filter" id="gb-filter" onchange="renderGuestBook()">
+          <option value="">All statuses</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="confirmed">Showed</option>
+          <option value="noshow">No Show</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <input class="gb-search" id="gb-search" type="text" placeholder="Search name, phone, occasion…" oninput="renderGuestBook()">
+      </div>
+    </div>
+    <table class="gb-table">
+      <thead>
+        <tr>
+          <th>Guest Name</th><th>Phone</th><th>Date</th><th>Time</th>
+          <th>Party Size</th><th>Kids</th><th>Occasion</th><th>Status</th><th>Added By</th>
+        </tr>
+      </thead>
+      <tbody id="gb-body"></tbody>
+    </table>
+    <div id="gb-empty" class="gb-empty" style="display:none;">No guests found</div>
+  </div>
+
+  <div class="app-footer">
+    <div class="footer-legend">
+      <div class="legend-item"><div class="legend-dot or"></div><div class="legend-text">Reservations (Sun–Thu)</div></div>
+      <div class="legend-item"><div class="legend-dot gr"></div><div class="legend-text">Expected Arrivals (Fri–Sat)</div></div>
+      <div class="legend-item"><div class="legend-dot rd"></div><div class="legend-text">No Show</div></div>
+      <div class="legend-item"><div class="legend-dot gy"></div><div class="legend-text">Cancelled</div></div>
+    </div>
+    <div class="footer-credit">Huey Luey's &copy; 2026</div>
+  </div>
+</div>
+
+<!-- MODAL -->
+
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-hdr res" id="modal-hdr">
+      <div class="modal-title-text" id="modal-title">Reservation</div>
+      <button class="modal-close" onclick="closeModal()">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="sec-div">Guest Information</div>
+      <div class="form-group">
+        <div class="form-label">Guest Name *</div>
+        <input class="form-input" id="f-name" type="text" placeholder="Last name or party name" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Phone Number</div>
+        <input class="form-input" id="f-phone" type="tel" placeholder="(555) 555-5555">
+      </div>
+      <div class="sec-div">Reservation Details</div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Date *</div>
+          <input class="form-input" id="f-date" type="date">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Arrival Time</div>
+          <input class="form-input" id="f-time" type="time">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Party Size</div>
+          <input class="form-input" id="f-size" type="number" min="1" max="500" placeholder="# guests">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Kids in Party</div>
+          <input class="form-input" id="f-kids" type="number" min="0" max="200" placeholder="# kids">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Occasion</div>
+        <input class="form-input" id="f-occasion" type="text" placeholder="Birthday, anniversary, rehearsal dinner…">
+      </div>
+      <div class="sec-div">Status</div>
+      <div class="status-grid">
+        <button class="status-btn active-confirmed" id="sb-confirmed" onclick="setStatus('confirmed')">&#10003; Confirmed</button>
+        <button class="status-btn" id="sb-noshow" onclick="setStatus('noshow')">&#10007; No Show</button>
+        <button class="status-btn" id="sb-cancelled" onclick="setStatus('cancelled')">— Cancelled</button>
+      </div>
+      <div class="mgr-info-box">
+        <div>
+          <div class="mgr-info-label">Entered / Last Edited By</div>
+          <div class="mgr-info-name" id="modal-mgr-name">—</div>
+        </div>
+        <div class="mgr-info-time" id="modal-mgr-time"></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-save res" id="modal-save-btn" onclick="saveSlot()">Save Reservation</button>
+      <button class="btn-delete" id="modal-del-btn" onclick="deleteSlot()" style="display:none;">Remove</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── PASSCODES ───────────────────────────
+const MANAGERS = {'3679':'Tyler','4445':'Marlon','3338':'Nash','1231':'Liz','4449':'Veronica'};
+let pin='', currentManager='';
+
+function pressKey(k){
+  if(pin.length>=4)return;
+  pin+=k; updateDots();
+  if(pin.length===4)checkPin();
+}
+function pressDelete(){ pin=pin.slice(0,-1); updateDots(); clearErr(); }
+function updateDots(){
+  for(let i=0;i<4;i++){
+    const d=document.getElementById('d'+i);
+    d.classList.toggle('filled',i<pin.length);
+    d.classList.remove('error');
+  }
+}
+function checkPin(){
+  if(MANAGERS[pin]){
+    currentManager=MANAGERS[pin];
+    document.getElementById('mgr-display').textContent=currentManager;
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    goToToday();
+  } else {
+    for(let i=0;i<4;i++){
+      document.getElementById('d'+i).classList.add('error');
+      document.getElementById('d'+i).classList.remove('filled');
+    }
+    const err=document.getElementById('login-error');
+    err.classList.add('show');
+    setTimeout(()=>{pin='';updateDots();},650);
+    setTimeout(()=>err.classList.remove('show'),2200);
+  }
+}
+function clearErr(){ document.getElementById('login-error').classList.remove('show'); }
+function logout(){
+  pin='';currentManager='';updateDots();
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
+
+// ─── DATE HELPERS ────────────────────────
+function getMonday(d){
+  const x=new Date(d);x.setHours(0,0,0,0);
+  // Anchor to Monday (getDay: 0=Sun,1=Mon,...6=Sat)
+  const day=x.getDay();
+  const diff=(day===0)?-6:1-day; // roll back to Monday
+  x.setDate(x.getDate()+diff);return x;
+}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x;}
+function toISO(d){return d.toISOString().split('T')[0];}
+function fmtWeek(sun){
+  const sat=addDays(sun,6);
+  const o={month:'short',day:'numeric'};
+  return sun.toLocaleDateString('en-US',o)+' – '+sat.toLocaleDateString('en-US',o)+', '+sat.getFullYear();
+}
+function fmtDate(iso){
+  if(!iso)return'—';
+  const[y,m,d]=iso.split('-');
+  return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1]+' '+parseInt(d)+', '+y;
+}
+function fmtTime(t){
+  if(!t)return'';
+  const[h,m]=t.split(':').map(Number);
+  return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
+}
+function fmtDT(iso){
+  if(!iso)return'';
+  const d=new Date(iso);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+}
+function dayName(i){return['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][i];}
+
+// ─── WEEK STATE ──────────────────────────
+let weekStart=getMonday(new Date());
+function changeWeek(dir){weekStart=addDays(weekStart,dir*7);renderWeek();}
+function goToToday(){weekStart=getMonday(new Date());renderWeek();}
+
+// ─── TABS ────────────────────────────────
+function switchTab(tab){
+  document.getElementById('week-view').style.display=tab==='week'?'block':'none';
+  document.getElementById('guestbook-view').style.display=tab==='guests'?'block':'none';
+  document.getElementById('tab-week').classList.toggle('active',tab==='week');
+  document.getElementById('tab-guests').classList.toggle('active',tab==='guests');
+  if(tab==='guests')renderGuestBook();
+}
+
+// ─── STORAGE ─────────────────────────────
+// All reservations in one flat array: hl_reservations_v2
+// Each: {id, name, phone, date, time, size, kids, occasion, status, mgrName, mgrTime, weekISO, dayIdx}
+
+function loadAll(){
+  try{return JSON.parse(localStorage.getItem('hl_reservations_v2')||'[]');}catch(e){return[];}
+}
+function saveAll(arr){localStorage.setItem('hl_reservations_v2',JSON.stringify(arr));}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+function getWeekSlots(weekISO){
+  const all=loadAll();
+  const res={};
+  for(let i=0;i<7;i++)res[i]=[];
+  all.filter(e=>e.weekISO===weekISO).forEach(e=>{
+    res[e.dayIdx]=res[e.dayIdx]||[];
+    res[e.dayIdx].push(e);
+  });
+  for(let i=0;i<7;i++)res[i].sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  return res;
+}
+
+// ─── RENDER WEEK ─────────────────────────
+let currentWeekISO='', weekSlots={};
+
+function renderWeek(){
+  currentWeekISO=toISO(weekStart);
+  weekSlots=getWeekSlots(currentWeekISO);
+  document.getElementById('week-lbl').textContent=fmtWeek(weekStart);
+  const grid=document.getElementById('day-grid');
+  grid.innerHTML='';
+  for(let i=0;i<7;i++){
+    const date=addDays(weekStart,i);
+    const isExp=(i===4||i===5);
+    const col=document.createElement('div');
+    col.className='day-col '+(isExp?'exp-day':'res-day');
+    col.innerHTML=buildDayHTML(i,date,isExp);
+    grid.appendChild(col);
+  }
+}
+
+function buildDayHTML(di,date,isExp){
+  const slots=weekSlots[di]||[];
+  const dateStr=date.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const typeLabel=isExp?'Expected Arrivals':'Reservations';
+  let html=`<div class="day-header">
+    <div class="dh-name">${dayName(di)}</div>
+    <div class="dh-date">${dateStr}</div>
+    <div class="dh-type">${typeLabel}</div>
+  </div><div class="slot-list">`;
+  slots.forEach(s=>{ html+=buildSlotHTML(s,isExp); });
+  html+=`<button class="add-slot-btn" onclick="openModal(null,${di})">+ Add ${isExp?'Expected Arrival':'Reservation'}</button>`;
+  html+='</div>';
+  return html;
+}
+
+function buildSlotHTML(s,isExp){
+  const sc=s.status==='noshow'?'status-noshow':s.status==='cancelled'?'status-cancelled':'';
+  const timeBadge=s.time?`<div class="slot-time-badge">${fmtTime(s.time)}</div>`:'';
+  let stBadge='';
+  if(s.status==='noshow')stBadge='<div class="slot-status-badge noshow">No Show</div>';
+  if(s.status==='cancelled')stBadge='<div class="slot-status-badge cancelled">Cancelled</div>';
+  const kTag=(s.kids&&parseInt(s.kids)>0)?`<span class="slot-tag kids">&#128103; ${s.kids} kid${parseInt(s.kids)===1?'':'s'}</span>`:'';
+  const oTag=s.occasion?`<span class="slot-tag occ">&#127881; ${escH(s.occasion)}</span>`:'';
+  const mTag=s.mgrName?`<span class="slot-tag mgr">${escH(s.mgrName)}</span>`:'';
+  return `<div class="res-slot has-data ${sc}" onclick="openModal('${s.id}',${s.dayIdx})">
+    ${timeBadge}${stBadge}
+    <div class="slot-name">${escH(s.name)}</div>
+    <div class="slot-detail">Party of <strong>${s.size||'?'}</strong>${s.phone?' · '+escH(s.phone):''}</div>
+    <div class="slot-tags">${kTag}${oTag}${mTag}</div>
+  </div>`;
+}
+
+function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ─── MODAL ───────────────────────────────
+let modalId=null, modalDayIdx=-1, modalStatus='confirmed';
+
+function openModal(id,dayIdx){
+  modalId=id; modalDayIdx=dayIdx;
+  const isExp=(dayIdx===4||dayIdx===5);
+  const isEdit=!!id;
+
+  document.getElementById('modal-hdr').className='modal-hdr '+(isExp?'exp':'res');
+  document.getElementById('modal-save-btn').className='btn-save '+(isExp?'exp':'res');
+  document.getElementById('modal-title').textContent=isEdit?(isExp?'Edit Expected Arrival':'Edit Reservation'):(isExp?'Add Expected Arrival':'Add Reservation');
+  document.getElementById('modal-save-btn').textContent=isEdit?'Update':(isExp?'Save Expected Arrival':'Save Reservation');
+  document.getElementById('modal-del-btn').style.display=isEdit?'inline-flex':'none';
+
+  const dayDate=addDays(weekStart,dayIdx);
+  const defDate=toISO(dayDate);
+
+  if(isEdit){
+    const s=loadAll().find(e=>e.id===id);
+    if(!s)return;
+    document.getElementById('f-name').value=s.name||'';
+    document.getElementById('f-phone').value=s.phone||'';
+    document.getElementById('f-date').value=s.date||defDate;
+    document.getElementById('f-time').value=s.time||'';
+    document.getElementById('f-size').value=s.size||'';
+    document.getElementById('f-kids').value=s.kids||'';
+    document.getElementById('f-occasion').value=s.occasion||'';
+    setStatus(s.status||'confirmed');
+    document.getElementById('modal-mgr-name').textContent=s.mgrName||'—';
+    document.getElementById('modal-mgr-time').textContent=s.mgrTime?fmtDT(s.mgrTime):'';
+  } else {
+    document.getElementById('f-name').value='';
+    document.getElementById('f-phone').value='';
+    document.getElementById('f-date').value=defDate;
+    document.getElementById('f-time').value='';
+    document.getElementById('f-size').value='';
+    document.getElementById('f-kids').value='';
+    document.getElementById('f-occasion').value='';
+    setStatus('confirmed');
+    document.getElementById('modal-mgr-name').textContent=currentManager;
+    document.getElementById('modal-mgr-time').textContent='Now';
+  }
+
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('f-name').focus(),200);
+}
+
+function setStatus(s){
+  modalStatus=s;
+  ['confirmed','noshow','cancelled'].forEach(st=>{
+    const btn=document.getElementById('sb-'+st);
+    btn.className='status-btn';
+    if(st===s)btn.classList.add('active-'+st);
+  });
+}
+
+function closeModal(){ document.getElementById('modal-overlay').classList.remove('open'); }
+function closeModalOutside(e){ if(e.target===document.getElementById('modal-overlay'))closeModal(); }
+
+function saveSlot(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){
+    const inp=document.getElementById('f-name');
+    inp.style.borderColor='var(--red)';inp.focus();
+    setTimeout(()=>inp.style.borderColor='',1500);return;
+  }
+  const all=loadAll();
+  const now=new Date().toISOString();
+  if(modalId){
+    const idx=all.findIndex(e=>e.id===modalId);
+    if(idx>=0){
+      all[idx]={...all[idx],
+        name,
+        phone:document.getElementById('f-phone').value.trim(),
+        date:document.getElementById('f-date').value,
+        time:document.getElementById('f-time').value,
+        size:document.getElementById('f-size').value,
+        kids:document.getElementById('f-kids').value,
+        occasion:document.getElementById('f-occasion').value.trim(),
+        status:modalStatus,
+        mgrName:currentManager,
+        mgrTime:now
+      };
+    }
+  } else {
+    all.push({
+      id:uid(),
+      name,
+      phone:document.getElementById('f-phone').value.trim(),
+      date:document.getElementById('f-date').value,
+      time:document.getElementById('f-time').value,
+      size:document.getElementById('f-size').value,
+      kids:document.getElementById('f-kids').value,
+      occasion:document.getElementById('f-occasion').value.trim(),
+      status:modalStatus,
+      mgrName:currentManager,
+      mgrTime:now,
+      weekISO:currentWeekISO,
+      dayIdx:modalDayIdx
+    });
+  }
+  saveAll(all);
+  closeModal();
+  renderWeek();
+}
+
+function deleteSlot(){
+  if(!confirm('Permanently remove this reservation from the system?'))return;
+  saveAll(loadAll().filter(e=>e.id!==modalId));
+  closeModal();renderWeek();
+}
+
+// ─── GUEST BOOK ──────────────────────────
+function renderGuestBook(){
+  const q=(document.getElementById('gb-search').value||'').toLowerCase();
+  const filterStatus=document.getElementById('gb-filter').value;
+  const today=toISO(new Date());
+  let all=loadAll();
+
+  // Determine effective status for filtering
+  function effectiveStatus(s){
+    if(s.status==='noshow')return'noshow';
+    if(s.status==='cancelled')return'cancelled';
+    if((s.date||'')>=today)return'upcoming';
+    return'confirmed';
+  }
+
+  if(q)all=all.filter(e=>(e.name||'').toLowerCase().includes(q)||(e.phone||'').includes(q)||(e.occasion||'').toLowerCase().includes(q));
+  if(filterStatus)all=all.filter(e=>effectiveStatus(e)===filterStatus);
+  all.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+
+  document.getElementById('gb-count').textContent=`${all.length} reservation${all.length!==1?'s':''} found`;
+  const tbody=document.getElementById('gb-body');
+  tbody.innerHTML='';
+  document.getElementById('gb-empty').style.display=all.length?'none':'block';
+
+  all.forEach(s=>{
+    const es=effectiveStatus(s);
+    const labels={noshow:'No Show',cancelled:'Cancelled',upcoming:'Upcoming',confirmed:'Showed'};
+    const tr=document.createElement('tr');
+    tr.onclick=()=>{
+      // Switch to week view and navigate to that week
+      weekStart=getMonday(new Date(s.date+'T12:00:00'));
+      switchTab('week');
+      renderWeek();
+      // Open modal after render
+      setTimeout(()=>openModal(s.id,s.dayIdx),100);
+    };
+    tr.innerHTML=`
+      <td><strong>${escH(s.name)}</strong></td>
+      <td class="td-muted">${escH(s.phone)||'—'}</td>
+      <td class="td-muted">${fmtDate(s.date)}</td>
+      <td class="td-muted">${fmtTime(s.time)||'—'}</td>
+      <td class="td-muted">${s.size||'—'}</td>
+      <td class="td-muted">${(s.kids&&parseInt(s.kids)>0)?s.kids:'—'}</td>
+      <td class="td-muted">${escH(s.occasion)||'—'}</td>
+      <td><span class="gb-badge ${es}">${labels[es]}</span></td>
+      <td class="td-muted">${escH(s.mgrName)||'—'}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─── KEYBOARD ────────────────────────────
+document.addEventListener('keydown',e=>{
+  const loginUp=document.getElementById('login-screen').style.display!=='none';
+  if(loginUp){
+    if(e.key>='0'&&e.key<='9')pressKey(e.key);
+    if(e.key==='Backspace')pressDelete();
+  }
+  const mOpen=document.getElementById('modal-overlay').classList.contains('open');
+  if(mOpen){
+    if(e.key==='Escape')closeModal();
+    if(e.key==='Enter'&&e.target.tagName!=='BUTTON')saveSlot();
+  }
+});
+</script>
+
+</body>
+</html>
