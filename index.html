@@ -30,7 +30,7 @@ html, body { height: 100%; }
 
 body {
 font-family: ‘Oswald’, sans-serif;
-background: #1C1814;
+background: #FFFDF7;
 color: var(–text);
 }
 
@@ -1136,35 +1136,41 @@ function renderDayCol(di, date, isExp, recs) {
   const typeLabel = isExp ? 'Expected Arrivals' : 'Reservations';
   const addLabel  = isExp ? '+ Add Expected Arrival' : '+ Add Reservation';
   const slotClass = isExp ? 'exp-day-slot' : 'res-day-slot';
+  const hdrBg = isExp ? '#648B1A' : '#FF6B0B';
 
   let cards = '';
-  recs.forEach(r => { cards += renderCard(r, slotClass); });
+  recs.forEach(r => { cards += renderCard(r, slotClass, isExp); });
 
   return `
-    <div class="day-header">
-      <div class="dh-name">${DAYS[di]}</div>
-      <div class="dh-date">${dateStr}</div>
-      <div class="dh-type">${typeLabel}</div>
+    <div style="background:${hdrBg};padding:10px 8px 8px;text-align:center;flex-shrink:0;">
+      <div style="font-family:'Alfa Slab One',serif;font-size:14px;color:#fff;text-transform:uppercase;letter-spacing:0.04em;line-height:1;">${DAYS[di]}</div>
+      <div style="font-size:9px;font-weight:400;color:rgba(255,255,255,0.88);letter-spacing:0.08em;margin-top:3px;">${dateStr}</div>
+      <div style="font-size:7px;font-weight:600;color:rgba(255,255,255,0.92);text-transform:uppercase;letter-spacing:0.16em;margin-top:3px;">${typeLabel}</div>
     </div>
-    <div class="slot-list">
+    <div style="display:flex;flex-direction:column;padding:6px;gap:5px;">
       ${cards}
       <button class="add-btn" onclick="openModal(null,${di})">${addLabel}</button>
     </div>`;
 }
 
-function renderCard(r, slotClass) {
+function renderCard(r, slotClass, isExp) {
+  const accent = isExp ? '#648B1A' : '#FF6B0B';
   const sc = r.status==='noshow' ? 'noshow' : r.status==='cancelled' ? 'cancelled' : '';
-  const timeBadge = r.time ? `<div class="slot-time ${slotClass}">${fmtTime(r.time)}</div>` : '';
-  const stPill = sc ? `<div class="slot-status-pill ${sc}">${sc==='noshow'?'No Show':'Cancelled'}</div>` : '';
-  const kTag = (r.kids && parseInt(r.kids)>0) ? `<span class="stag kids">&#128103; ${r.kids} kid${+r.kids===1?'':'s'}</span>` : '';
-  const oTag = r.occasion ? `<span class="stag occ">&#127881; ${esc(r.occasion)}</span>` : '';
-  const mTag = r.mgrName  ? `<span class="stag mgr">${esc(r.mgrName)}</span>` : '';
+  const leftColor = sc==='noshow' ? '#C0574A' : sc==='cancelled' ? '#999' : accent;
+  const opacity = sc==='noshow' ? '0.78' : sc==='cancelled' ? '0.62' : '1';
+  const timeBadge = r.time ? `<div style="position:absolute;top:5px;right:5px;font-size:9px;font-weight:700;color:#fff;background:${accent};border-radius:3px;padding:1px 5px;">${fmtTime(r.time)}</div>` : '';
+  let stPill = '';
+  if (sc==='noshow') stPill = '<div style="position:absolute;bottom:5px;right:5px;font-size:7px;font-weight:700;background:#fde8e6;color:#C0574A;border-radius:3px;padding:1px 5px;text-transform:uppercase;letter-spacing:0.06em;">No Show</div>';
+  if (sc==='cancelled') stPill = '<div style="position:absolute;bottom:5px;right:5px;font-size:7px;font-weight:700;background:#eee;color:#999;border-radius:3px;padding:1px 5px;text-transform:uppercase;letter-spacing:0.06em;">Cancelled</div>';
+  const kTag = (r.kids && parseInt(r.kids)>0) ? `<span style="font-size:7px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border-radius:3px;padding:1px 4px;border:1px solid ${accent};color:${accent};">&#128103; ${r.kids} kid${+r.kids===1?'':'s'}</span>` : '';
+  const oTag = r.occasion ? `<span style="font-size:7px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border-radius:3px;padding:1px 4px;border:1px solid #7B5EA7;color:#7B5EA7;">&#127881; ${esc(r.occasion)}</span>` : '';
+  const mTag = r.mgrName  ? `<span style="font-size:7px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;border-radius:3px;padding:1px 4px;border:1px solid #E0D8CC;color:#8A7F75;">${esc(r.mgrName)}</span>` : '';
   return `
-    <div class="res-slot filled ${slotClass} ${sc}" onclick="openModal('${r.id}',${r.dayIdx})">
+    <div style="position:relative;background:#fff;border:1px solid #D0C8BC;border-left:3px solid ${leftColor};border-radius:6px;padding:6px 7px 7px;cursor:pointer;min-height:72px;opacity:${opacity};" onclick="openModal('${r.id}',${r.dayIdx})">
       ${timeBadge}${stPill}
-      <div class="slot-name">${esc(r.name)}</div>
-      <div class="slot-detail">Party of <strong>${r.size||'?'}</strong>${r.phone?' · '+esc(r.phone):''}</div>
-      <div class="slot-tags">${kTag}${oTag}${mTag}</div>
+      <div style="font-size:12px;font-weight:700;color:#2A2220;text-transform:uppercase;letter-spacing:0.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;">${esc(r.name)}</div>
+      <div style="font-size:9px;color:#8A7F75;margin-top:2px;">Party of <strong style="font-weight:600;color:#2A2220;">${r.size||'?'}</strong>${r.phone?' &middot; '+esc(r.phone):''}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;">${kTag}${oTag}${mTag}</div>
     </div>`;
 }
 
