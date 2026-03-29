@@ -37,7 +37,7 @@ body{font-family:'Oswald',sans-serif;background:#1C1814;min-height:100vh;color:v
 .login-error.show{opacity:1;}
 
 /* APP */
-#app{display:none;flex-direction:column;min-height:100vh;background:var(–cream);}
+#app{display:none;flex-direction:column;height:100vh;background:var(–cream);}
 .stripe{display:flex;height:8px;flex-shrink:0;}
 .stripe span{flex:1;background:var(–orange);}
 .stripe span:nth-child(even){background:var(–green);}
@@ -69,8 +69,8 @@ body{font-family:'Oswald',sans-serif;background:#1C1814;min-height:100vh;color:v
 .tab:hover:not(.active){color:var(–text);}
 
 /* WEEK VIEW */
-#week-view{flex:1;overflow:auto;}
-.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0;padding:10px 8px;align-items:start;}
+#week-view{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.day-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:0;padding:10px 8px;align-items:start;flex:1;}
 .day-col{display:flex;flex-direction:column;border:1px solid var(–border);border-radius:6px;overflow:hidden;margin:0 3px;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.05);}
 .day-header{padding:7px 7px 5px;text-align:center;}
 .day-col.res-day .day-header{background:var(–orange);}
@@ -106,7 +106,7 @@ body{font-family:'Oswald',sans-serif;background:#1C1814;min-height:100vh;color:v
 .day-col.exp-day .add-slot-btn:hover{border-color:var(–green);color:var(–green);}
 
 /* GUEST BOOK */
-#guestbook-view{display:none;flex:1;overflow:auto;padding:16px 20px;}
+#guestbook-view{display:none;flex:1;overflow-y:auto;padding:16px 20px;}
 .gb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
 .gb-title{font-family:‘Alfa Slab One’,serif;font-size:16px;color:var(–text);text-transform:uppercase;letter-spacing:.04em;}
 .gb-controls{display:flex;gap:8px;align-items:center;}
@@ -176,7 +176,7 @@ body{font-family:'Oswald',sans-serif;background:#1C1814;min-height:100vh;color:v
 @media print{
 #login-screen,.tab-bar,.app-footer,.add-slot-btn,.hdr-btns,.today-btn,#guestbook-view{display:none!important;}
 #app{display:flex!important;}
-#week-view{display:block!important;overflow:visible;}
+#week-view{display:flex!important;overflow:visible;flex-direction:column;}
 body{background:#fff;}
 @page{size:11in 8.5in landscape;margin:.3in;}
 }
@@ -438,8 +438,8 @@ function goToToday(){weekStart=getMonday(new Date());renderWeek();}
 
 // ─── TABS ────────────────────────────────
 function switchTab(tab){
-  document.getElementById('week-view').style.display=tab==='week'?'block':'none';
-  document.getElementById('guestbook-view').style.display=tab==='guests'?'block':'none';
+  document.getElementById('week-view').style.display=tab==='week'?'flex':'none';
+  document.getElementById('guestbook-view').style.display=tab==='guests'?'flex':'none';
   document.getElementById('tab-week').classList.toggle('active',tab==='week');
   document.getElementById('tab-guests').classList.toggle('active',tab==='guests');
   if(tab==='guests')renderGuestBook();
