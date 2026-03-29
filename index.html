@@ -60,46 +60,48 @@ z-index: 1;
 }
 .login-brand-name {
 font-family: ‘Alfa Slab One’, serif;
-font-size: 38px;
-color: var(–orange);
-letter-spacing: 0.04em;
+font-size: 46px;
+color: #FF6B0B;
+letter-spacing: 0.06em;
 text-transform: uppercase;
+text-shadow: 0 0 40px rgba(255,107,11,0.4);
 }
 .login-brand-sub {
 font-size: 10px;
 font-weight: 300;
 letter-spacing: 0.35em;
 text-transform: uppercase;
-color: rgba(255,255,255,0.35);
-margin-top: 4px;
+color: rgba(255,255,255,0.55);
+margin-top: 6px;
 }
 .login-card {
 position: relative;
 z-index: 1;
 background: #252018;
-border: 1px solid rgba(255,107,11,0.25);
+border: 1px solid rgba(255,107,11,0.3);
+border-top: 3px solid #FF6B0B;
 border-radius: 14px;
 padding: 32px 38px 28px;
-width: 320px;
+width: 340px;
 display: flex;
 flex-direction: column;
 align-items: center;
 gap: 22px;
-box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+box-shadow: 0 20px 80px rgba(0,0,0,0.7), 0 0 60px rgba(255,107,11,0.08);
 }
 .login-title {
 font-size: 10px;
 font-weight: 600;
 letter-spacing: 0.35em;
 text-transform: uppercase;
-color: rgba(255,255,255,0.4);
+color: rgba(255,255,255,0.65);
 }
 .pin-dots { display: flex; gap: 14px; }
 .pin-dot {
-width: 14px;
-height: 14px;
+width: 16px;
+height: 16px;
 border-radius: 50%;
-border: 2px solid rgba(255,107,11,0.35);
+border: 2px solid rgba(255,107,11,0.5);
 background: transparent;
 transition: all 0.15s;
 }
@@ -116,14 +118,13 @@ gap: 10px;
 width: 100%;
 }
 .key-btn {
-background: #2E2820;
-border: 1px solid rgba(255,255,255,0.08);
-border-radius: 8px;
+background: #332C24;
+border: 1px solid rgba(255,255,255,0.12);
+border-radius: 10px;
 color: #fff;
-font-family: ‘Oswald’, sans-serif;
-font-weight: 600;
-font-size: 22px;
-padding: 14px 0;
+font-family: ‘Alfa Slab One’, serif;
+font-size: 24px;
+padding: 16px 0;
 cursor: pointer;
 transition: all 0.1s;
 user-select: none;
@@ -150,7 +151,7 @@ display: none;
 position: fixed;
 inset: 0;
 flex-direction: column;
-background: var(–cream);
+background: #FFFDF7;
 overflow: hidden;
 }
 #app.visible { display: flex; }
@@ -171,17 +172,17 @@ align-items: center;
 justify-content: space-between;
 padding: 10px 20px;
 background: #fff;
-border-bottom: 3px solid var(–orange);
+border-bottom: 3px solid #FF6B0B;
 flex-shrink: 0;
 gap: 12px;
-box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+box-shadow: 0 2px 16px rgba(0,0,0,0.1);
 }
 .brand-name {
 font-family: ‘Alfa Slab One’, serif;
-font-size: 20px;
-color: var(–orange);
+font-size: 22px;
+color: #FF6B0B;
 text-transform: uppercase;
-letter-spacing: 0.04em;
+letter-spacing: 0.05em;
 line-height: 1;
 }
 .brand-sub {
@@ -195,8 +196,8 @@ margin-top: 2px;
 .header-center { text-align: center; flex: 1; }
 .doc-title {
 font-family: ‘Alfa Slab One’, serif;
-font-size: 17px;
-color: var(–text);
+font-size: 19px;
+color: #2A2220;
 text-transform: uppercase;
 letter-spacing: 0.06em;
 }
@@ -223,11 +224,12 @@ transition: all 0.15s;
 }
 .nav-btn:hover { border-color: var(–orange); color: var(–orange); }
 .week-label {
-font-size: 12px;
-font-weight: 600;
+font-family: ‘Oswald’, sans-serif;
+font-size: 13px;
+font-weight: 700;
 letter-spacing: 0.12em;
 text-transform: uppercase;
-color: var(–text);
+color: #2A2220;
 min-width: 200px;
 text-align: center;
 }
@@ -475,17 +477,17 @@ display: flex;
 align-items: center;
 justify-content: center;
 width: 100%;
-padding: 7px 0;
+padding: 8px 0;
 margin-top: 2px;
 background: none;
-border: 1.5px dashed var(–border);
+border: 1.5px dashed #D0C8BC;
 border-radius: 6px;
 font-family: ‘Oswald’, sans-serif;
-font-size: 8px;
+font-size: 9px;
 font-weight: 600;
 letter-spacing: 0.18em;
 text-transform: uppercase;
-color: var(–muted);
+color: #A09890;
 cursor: pointer;
 transition: all 0.15s;
 margin-bottom: 4px;
@@ -586,7 +588,7 @@ backdrop-filter: blur(3px);
 }
 .modal-overlay.open { opacity: 1; pointer-events: all; }
 .modal {
-background: #fff;
+background: #FFFDF7;
 border-radius: 12px;
 width: 440px;
 max-width: 96vw;
@@ -611,10 +613,10 @@ z-index: 2;
 .modal-head.green  { background: var(–green); }
 .modal-head-title {
 font-family: ‘Alfa Slab One’, serif;
-font-size: 14px;
+font-size: 16px;
 color: #fff;
 text-transform: uppercase;
-letter-spacing: 0.04em;
+letter-spacing: 0.05em;
 }
 .modal-x {
 width: 26px; height: 26px;
@@ -629,16 +631,16 @@ transition: background 0.15s;
 }
 .modal-x:hover { background: rgba(255,255,255,0.38); }
 
-.modal-body { padding: 18px; display: flex; flex-direction: column; gap: 13px; }
+.modal-body { padding: 18px; display: flex; flex-direction: column; gap: 13px; background: #FFFDF7; }
 
 .sec-label {
 font-size: 8px;
 font-weight: 700;
 letter-spacing: 0.25em;
 text-transform: uppercase;
-color: var(–orange);
+color: #FF6B0B;
 padding-bottom: 5px;
-border-bottom: 1px solid #FFE0CC;
+border-bottom: 2px solid #FFE0CC;
 }
 
 .frow { display: flex; gap: 10px; }
@@ -653,16 +655,19 @@ color: var(–muted);
 .finput {
 font-family: ‘Oswald’, sans-serif;
 font-size: 14px;
-color: var(–text);
-border: 1.5px solid var(–border);
+color: #2A2220;
+border: 1.5px solid #E0D8CC;
 border-radius: 6px;
-padding: 8px 10px;
-background: var(–warm);
+padding: 10px 12px;
+background: #F5F0E8;
 outline: none;
+-webkit-appearance: none;
+appearance: none;
 width: 100%;
 transition: border-color 0.15s, background 0.15s;
+-webkit-tap-highlight-color: transparent;
 }
-.finput:focus { border-color: var(–orange); background: #fff; }
+.finput:focus { border-color: #FF6B0B !important; background: #fff; outline: none; box-shadow: 0 0 0 3px rgba(255,107,11,0.12); }
 
 .status-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
 .status-opt {
@@ -680,9 +685,9 @@ cursor: pointer;
 transition: all 0.15s;
 text-align: center;
 }
-.status-opt.sel-confirmed { background: var(–green); border-color: var(–green); color: #fff; }
-.status-opt.sel-noshow    { background: var(–red);   border-color: var(–red);   color: #fff; }
-.status-opt.sel-cancelled { background: var(–gray);  border-color: var(–gray);  color: #fff; }
+.status-opt.sel-confirmed { background: #648B1A; border-color: #648B1A; color: #fff; }
+.status-opt.sel-noshow    { background: #C0574A; border-color: #C0574A; color: #fff; }
+.status-opt.sel-cancelled { background: #888;    border-color: #888;    color: #fff; }
 
 .mgr-box {
 background: var(–warm);
@@ -701,7 +706,7 @@ text-transform: uppercase;
 color: var(–muted);
 margin-bottom: 2px;
 }
-.mgr-box-name { font-size: 15px; font-weight: 700; color: var(–orange); }
+.mgr-box-name { font-family: ‘Alfa Slab One’, serif; font-size: 18px; color: #FF6B0B; }
 .mgr-box-time { font-size: 9px; color: var(–muted); }
 
 .modal-actions {
