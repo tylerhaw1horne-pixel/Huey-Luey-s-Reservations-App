@@ -41,6 +41,8 @@ box-shadow: 0 2px 10px rgba(0,0,0,.2); flex-shrink: 0;
 .login-topbar img { height: 42px; display: block; margin: 0 auto 4px; filter: brightness(0) invert(1); }
 .login-topbar-fb { display: none; font-weight: 800; font-size: 24px; color: #fff; margin-bottom: 3px; }
 .login-topbar-sub { font-size: .6rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,.72); }
+.login-topbar-name { font-weight: 800; font-size: 30px; color: #fff; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; line-height: 1; }
+.app-topbar-name { font-weight: 800; font-size: 20px; color: #fff; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; line-height: 1; }
 .login-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px; }
 .login-card {
 background: var(–card); border-radius: var(–r); border: 2px solid rgba(30,127,79,.13);
@@ -53,9 +55,10 @@ box-shadow: var(–sh);
 .keypad { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; width: 100%; }
 .key-btn {
 background: var(–paper); border: 2px solid var(–bdr); border-radius: 12px;
-color: var(–ink); font-family: ‘Poppins’, sans-serif; font-weight: 800; font-size: 24px;
+color: var(–ink) !important; font-family: ‘Poppins’, sans-serif; font-weight: 800; font-size: 24px;
 padding: 15px 0; cursor: pointer; transition: all .12s; user-select: none;
-box-shadow: 0 2px 6px rgba(0,0,0,.06);
+box-shadow: 0 2px 6px rgba(0,0,0,.06); -webkit-appearance: none; appearance: none;
+text-decoration: none;
 }
 .key-btn:hover { background: var(–grn-p); border-color: var(–grn-b); color: var(–grn); }
 .key-btn:active { background: var(–org); border-color: var(–org); color: #fff; transform: scale(.93); }
@@ -325,9 +328,7 @@ border-radius: 9px; padding: 10px 14px; cursor: pointer; transition: all .15s;
 
 <div id="login-screen">
   <div class="login-topbar">
-    <img src="https://hueylueys.com/wp-content/uploads/2016/09/hllogo-light.png" alt="Huey Luey's"
-         onerror="this.style.display='none';document.querySelector('.login-topbar-fb').style.display='block'">
-    <div class="login-topbar-fb">HUEY LUEY'S</div>
+    <div class="login-topbar-name">HUEY LUEY'S</div>
     <div class="login-topbar-sub">Reservation Manager</div>
   </div>
   <div class="login-body">
@@ -369,9 +370,7 @@ border-radius: 9px; padding: 10px 14px; cursor: pointer; transition: all .15s;
       <button class="tbtn" onclick="window.print()">&#128438; Print</button>
       <button class="tbtn red" onclick="logout()">Sign Out</button>
     </div>
-    <img src="https://hueylueys.com/wp-content/uploads/2016/09/hllogo-light.png" alt="Huey Luey's"
-         onerror="this.style.display='none';document.querySelector('.app-topbar-fb').style.display='block'">
-    <div class="app-topbar-fb">HUEY LUEY'S</div>
+    <div class="app-topbar-name">HUEY LUEY'S</div>
     <div class="app-topbar-sub">Reservation Manager</div>
     <div class="app-topbar-right">
       <div class="mgr-label">Manager</div>
