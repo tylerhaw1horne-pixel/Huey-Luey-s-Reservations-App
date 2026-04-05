@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>Huey Luey's — Catering Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--grn:#1e7f4f;--grn-d:#16643e;--grn-p:#eaf4ee;--grn-b:#9dcfb4;--org:#d35400;--org-l:#e8651a;--org-p:#fdf0e8;--org-b:#f0b894;--ink:#1f2937;--paper:#f6f1e8;--card:#fff;--mut:#6b7280;--bdr:#e2d8cc;--sh:0 4px 14px rgba(0,0,0,.09);--r:14px}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Poppins',system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:15px;overflow-x:hidden}
+.topbar{background:var(--grn);padding:15px 16px 12px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.topbar img{height:36px;display:block;margin:0 auto 3px;filter:brightness(0) invert(1)}
+.topbar-fb{display:none;font-weight:800;font-size:20px;color:#fff;margin-bottom:2px}
+.topbar-sub{font-size:.6rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.sbar{display:flex;background:var(--grn-d)}
+.stab{flex:1;padding:8px 4px 7px;text-align:center;font-size:.57rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.4);border-bottom:3px solid transparent;transition:all .2s}
+.stab.active{color:#fff;border-bottom-color:var(--org)}
+.stab.done{color:rgba(255,255,255,.72);border-bottom-color:rgba(255,255,255,.35)}
+.snum{display:block;width:19px;height:19px;border-radius:50%;background:rgba(255,255,255,.12);color:rgba(255,255,255,.5);font-size:.65rem;font-weight:800;line-height:19px;margin:0 auto 2px;transition:all .2s}
+.stab.active .snum{background:var(--org);color:#fff}
+.stab.done .snum{background:rgba(255,255,255,.28);color:#fff}
+.page{display:none;padding:14px 13px 60px;animation:fu .2s ease}
+.page.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.sec-lbl{font-weight:700;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--org);margin:16px 0 8px 2px}
+.card{background:var(--card);border-radius:var(--r);border:2px solid rgba(30,127,79,.13);margin-bottom:11px;overflow:hidden;box-shadow:var(--sh)}
+.chd{background:linear-gradient(135deg,rgba(30,127,79,.06),transparent);padding:12px 15px 10px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:9px}
+.chd-dot{width:9px;height:9px;border-radius:50%;background:var(--org);flex-shrink:0}
+.chd h2{font-size:.94rem;font-weight:800;color:var(--ink)}
+.chd p{font-size:.69rem;color:var(--mut);margin-top:1px}
+.cbd{padding:13px}
+.field{margin-bottom:12px}.field:last-child{margin-bottom:0}
+.lbl{display:block;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grn);margin-bottom:5px}
+input[type=text],input[type=time],input[type=number]{width:100%;padding:10px 12px;border:2px solid var(--bdr);border-radius:9px;font-size:.91rem;font-family:'Poppins',sans-serif;font-weight:600;background:var(--paper);color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s;-webkit-appearance:none;appearance:none}
+input:focus{border-color:var(--grn);box-shadow:0 0 0 3px rgba(30,127,79,.1);background:#fff}
+.tbox{background:var(--grn-p);border:2px solid var(--grn-b);border-radius:11px;padding:13px 15px;margin-top:11px;display:none}
+.tbox.show{display:block}
+.tbox-lbl{font-size:.61rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--grn);margin-bottom:3px}
+.tbox-time{font-size:2.3rem;font-weight:800;color:var(--org);line-height:1;margin-bottom:3px}
+.tbox-det{font-size:.76rem;color:var(--grn-d);font-weight:600;margin-top:4px}
+.btn{display:block;width:100%;padding:14px 16px;border:none;border-radius:var(--r);font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;transition:transform .12s,background .15s;box-shadow:var(--sh)}
+.btn:active{transform:scale(.975)}
+.btn-grn{background:var(--grn);color:#fff}.btn-grn:hover{background:var(--grn-d)}
+.btn-org{background:var(--org);color:#fff}.btn-org:hover{background:var(--org-l)}
+.btn-ghost{background:transparent;border:2px solid var(--grn);color:var(--grn);font-size:.8rem;padding:9px 13px;box-shadow:none}
+.btn+.btn,.btn+.btn-ghost{margin-top:8px}
+.back-btn{display:inline-flex;align-items:center;gap:5px;background:none;border:none;color:var(--org);font-size:.77rem;font-weight:700;cursor:pointer;padding:0 0 11px;font-family:'Poppins',sans-serif}
+.hint{background:var(--org-p);border-left:4px solid var(--org);border-radius:0 9px 9px 0;padding:9px 12px;font-size:.71rem;color:var(--org);margin-bottom:11px;line-height:1.5;font-weight:600}
+.cat{border-radius:var(--r);margin-bottom:9px;overflow:hidden;box-shadow:var(--sh)}
+.cat-hd{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;cursor:pointer;user-select:none;background:var(--grn);transition:background .15s}
+.cat-hd:active{background:var(--grn-d)}
+.cat-title{font-size:.93rem;font-weight:800;color:#fff}
+.cat-desc{font-size:.65rem;color:rgba(255,255,255,.68);margin-top:2px;font-weight:400}
+.cat-right{display:flex;align-items:center;gap:7px}
+.cat-badge{background:var(--org);color:#fff;border-radius:20px;padding:2px 8px;font-size:.62rem;font-weight:800;display:none}
+.cat-badge.on{display:inline-block}
+.chev{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .22s;flex-shrink:0}
+.chev.open{transform:rotate(180deg)}
+.cat-body{display:none;background:var(--card);border:2px solid var(--grn);border-top:none;border-radius:0 0 var(--r) var(--r)}
+.cat-body.open{display:block}
+.cat-note{padding:9px 14px;font-size:.7rem;color:var(--ink);line-height:1.55;background:var(--grn-p);border-bottom:1px solid var(--grn-b);font-weight:600}
+.cat-note strong{color:var(--org)}
+.mitem{padding:13px 14px;border-bottom:1px solid var(--bdr)}.mitem:last-child{border-bottom:none}
+.mi-name{font-size:.92rem;font-weight:800;color:var(--ink)}
+.req-sec{border-radius:10px;padding:11px 12px;margin:10px 0 0}
+.req-sec.org{background:var(--org-p);border:2px solid var(--org-b)}
+.req-hd{font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.req-hd.org{color:var(--org)}
+.rbadge{border-radius:5px;padding:2px 6px;font-size:.58rem;font-weight:800}
+.rbadge.org{background:var(--org);color:#fff}
+.sel-opt{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--bdr);border-radius:8px;padding:8px 11px;cursor:pointer;font-size:.81rem;font-weight:600;color:var(--ink);margin-bottom:5px;transition:border-color .15s,background .15s}
+.sel-opt:last-child{margin-bottom:0}
+.sel-opt.sel-org{border-color:var(--org);background:var(--org-p);color:var(--org)}
+.sel-opt input{accent-color:var(--org);width:auto;padding:0;border:none;background:none;flex-shrink:0}
+.mnm-sec{background:var(--org-p);border:2px solid var(--org-b);border-radius:10px;padding:11px 12px;margin:10px 0 0}
+.mnm-hd{font-size:.65rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--org);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.mnm-sub{font-size:.68rem;color:var(--org);font-weight:600;margin-bottom:7px;opacity:.8}
+.mnm-opt{display:flex;align-items:center;gap:8px;background:#fff;border:2px solid var(--bdr);border-radius:8px;padding:8px 11px;cursor:pointer;font-size:.81rem;font-weight:600;color:var(--ink);margin-bottom:5px;transition:border-color .15s,background .15s}
+.mnm-opt:last-child{margin-bottom:0}
+.mnm-opt.sel-org{border-color:var(--org);background:var(--org-p);color:var(--org)}
+.mnm-opt input{accent-color:var(--org);width:auto;padding:0;border:none;background:none;flex-shrink:0}
+.mnm-err{color:#dc2626;font-size:.71rem;font-weight:700;margin-top:5px;display:none}
+.mnm-err.show{display:block}
+.sub-toggle{display:inline-flex;align-items:center;gap:4px;background:transparent;border:1.5px solid var(--org-b);color:var(--org);border-radius:6px;padding:4px 10px;font-size:.67rem;font-weight:700;font-family:'Poppins',sans-serif;cursor:pointer;letter-spacing:.04em;text-transform:uppercase;margin-top:9px}
+.sub-panel{background:var(--org-p);border:2px solid var(--org-b);border-radius:8px;padding:10px 11px;margin-top:7px;display:none}
+.sub-panel.open{display:block}
+.sub-panel-hd{font-size:.64rem;font-weight:800;color:var(--org);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.sub-item{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--bdr);border-radius:7px;padding:7px 10px;font-size:.8rem;font-weight:600;color:var(--ink);margin-bottom:5px;cursor:pointer;transition:border-color .15s}
+.sub-item:last-child{margin-bottom:0}
+.sub-item.sel-org{border-color:var(--org);background:var(--org-p);color:var(--org)}
+.sub-item input{accent-color:var(--org);width:auto;padding:0;border:none;background:none;flex-shrink:0}
+.qty-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:11px;padding-top:10px;border-top:2px dashed var(--bdr)}
+.qty-in{width:70px;padding:8px 8px;text-align:center;font-size:.97rem;font-weight:800;border:2px solid var(--bdr);border-radius:8px;background:var(--paper);font-family:'Poppins',sans-serif}
+.qty-unit{font-size:.68rem;color:var(--mut);font-weight:600}
+.add-btn{background:var(--org);color:#fff;border:none;border-radius:8px;padding:9px 17px;font-size:.79rem;font-weight:800;font-family:'Poppins',sans-serif;cursor:pointer;transition:background .15s;margin-left:auto}
+.add-btn:active{background:var(--org-l)}
+.added-tag{background:var(--grn-p);color:var(--grn-d);border:2px solid var(--grn-b);border-radius:7px;padding:3px 9px;font-size:.65rem;font-weight:800;display:none;letter-spacing:.04em;text-transform:uppercase}
+.added-tag.on{display:inline-block}
+.cart-empty{text-align:center;padding:22px;color:var(--mut);font-size:.82rem;font-weight:600}
+.cart-item{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:1px solid var(--bdr)}.cart-item:last-child{border-bottom:none}
+.ci-info{flex:1}.ci-name{font-weight:800;font-size:.87rem;color:var(--ink)}
+.ci-sub{font-size:.7rem;color:var(--org);font-weight:700;margin-top:1px}
+.ci-rm{background:none;border:none;color:#dc2626;font-size:.71rem;font-weight:800;cursor:pointer;padding:2px 5px;font-family:'Poppins',sans-serif;text-transform:uppercase;flex-shrink:0}
+.sum-card{background:var(--card);border-radius:var(--r);border:2px solid rgba(30,127,79,.15);margin-bottom:11px;overflow:hidden;box-shadow:var(--sh)}
+.sum-hd{background:var(--grn);padding:11px 14px;font-weight:800;font-size:.88rem;color:#fff;display:flex;align-items:center;gap:7px}
+.sum-dot{width:7px;height:7px;border-radius:50%;background:var(--org);flex-shrink:0}
+.sum-body{padding:12px 14px}
+.info-chip{background:var(--grn-p);border:1px solid var(--grn-b);border-radius:8px;padding:8px 12px;margin-bottom:6px;font-size:.81rem;font-weight:700;line-height:1.4}
+.info-chip strong{color:var(--org)}.info-chip:last-child{margin-bottom:0}
+.info-chip-org{background:var(--org-p);border-color:var(--org-b)}
+/* HOT RACK BLOCK */
+.rack-block{background:var(--grn-p);border:2px solid var(--grn-b);border-radius:10px;padding:11px 13px;margin-bottom:8px}
+.rack-title{font-size:.81rem;font-weight:800;color:var(--grn-d);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--grn-b)}
+.rack-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px dashed rgba(30,127,79,.14);font-size:.79rem}
+.rack-row:last-child{border-bottom:none;padding-bottom:0}
+.rack-item{color:var(--ink);font-weight:600;padding-right:8px}
+.rack-val{color:var(--grn-d);font-weight:800;text-align:right;white-space:nowrap}
+/* COLD CLAMSHELL BLOCK */
+.cold-block{background:#e8f4fd;border:2px solid #93c5e0;border-radius:10px;padding:11px 13px;margin-bottom:8px}
+.cold-title{font-size:.81rem;font-weight:800;color:#1a5f8a;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid #93c5e0}
+.cold-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px dashed rgba(26,95,138,.14);font-size:.79rem}
+.cold-row:last-child{border-bottom:none;padding-bottom:0}
+.cold-item{color:var(--ink);font-weight:600;padding-right:8px}
+.cold-val{color:#1a5f8a;font-weight:800;text-align:right;white-space:nowrap}
+/* CHIPS BLOCK */
+.chips-block{background:var(--org-p);border:2px solid var(--org-b);border-radius:10px;padding:11px 13px;margin-bottom:8px}
+.chips-title{font-size:.81rem;font-weight:800;color:var(--org);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--org-b)}
+.chips-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed rgba(211,84,0,.14);font-size:.79rem}
+.chips-row:last-child{border-bottom:none;padding-bottom:0}
+/* UTENSIL BLOCK */
+.uten-block{background:var(--org-p);border:2px solid var(--org-b);border-radius:10px;padding:11px 13px;margin-bottom:8px}
+.uten-title{font-size:.81rem;font-weight:800;color:var(--org);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--org-b)}
+.uten-row{padding:5px 0;border-bottom:1px dashed rgba(211,84,0,.14);font-size:.78rem}
+.uten-row:last-child{border-bottom:none;padding-bottom:0}
+.uten-name{color:var(--ink);font-weight:800}
+.uten-detail{color:var(--mut);font-size:.7rem;margin-top:2px;font-weight:600}
+.always-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed var(--bdr);font-size:.79rem}
+.always-row:last-child{border-bottom:none}
+.always-item{color:var(--ink);font-weight:600}
+.always-qty{color:var(--org);font-weight:800;font-size:.78rem;text-align:right;padding-left:8px}
+.rack-warn{background:var(--org-p);border:2px solid var(--org-b);border-radius:10px;padding:11px 13px;margin-bottom:8px;font-size:.78rem;font-weight:700;color:var(--org);text-align:center}
+.setup-toggle{width:100%;background:var(--grn-p);border:2px solid var(--grn-b);border-radius:10px;padding:11px 14px;font-family:'Poppins',sans-serif;font-size:.81rem;font-weight:800;color:var(--grn-d);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;margin-bottom:0}
+.setup-body{display:none;background:var(--grn-p);border:2px solid var(--grn-b);border-top:none;border-radius:0 0 10px 10px;padding:0 13px 12px}
+.setup-body.open{display:block}
+.flow-step{display:flex;gap:9px;padding:6px 0;border-bottom:1px dashed var(--grn-b);font-size:.77rem;font-weight:600;align-items:flex-start;color:var(--ink)}
+.flow-step:last-child{border-bottom:none}
+.flow-num{background:var(--grn);color:#fff;border-radius:50%;width:21px;height:21px;display:flex;align-items:center;justify-content:center;font-size:.64rem;font-weight:800;flex-shrink:0;margin-top:1px}
+.eml-st{text-align:center;padding:11px;border-radius:9px;font-size:.81rem;font-weight:700;margin-top:9px;display:none}
+.eml-st.ok{background:var(--grn-p);color:var(--grn-d);display:block;border:2px solid var(--grn-b)}
+.grad-line{height:4px;border-radius:999px;background:linear-gradient(to right,var(--grn),var(--org));margin:5px 0 13px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <img src="https://hueylueys.com/wp-content/uploads/2016/09/hllogo-light.png" alt="Huey Luey's" onerror="this.style.display='none';document.querySelector('.topbar-fb').style.display='block'"/>
+  <div class="topbar-fb">HUEY LUEY'S</div>
+  <div class="topbar-sub">Catering Guide</div>
+</div>
+<div class="sbar">
+  <div class="stab active" id="st1"><span class="snum">1</span>Driver Info</div>
+  <div class="stab" id="st2"><span class="snum">2</span>Menu Items</div>
+  <div class="stab" id="st3"><span class="snum">3</span>Summary</div>
+</div>
+<div class="page active" id="pg1">
+  <div class="sec-lbl">Order Details</div>
+  <div class="card">
+    <div class="chd"><div class="chd-dot"></div><div><h2>Driver &amp; Order Info</h2><p>Fill out before heading out</p></div></div>
+    <div class="cbd">
+      <div class="field"><label class="lbl">Your Name</label><input type="text" id="fName" placeholder="First &amp; Last Name" autocomplete="name"/></div>
+      <div class="field"><label class="lbl">Catering Order Name</label><input type="text" id="fOrder" placeholder="e.g. Smith Wedding, ABC Corp"/></div>
+      <div class="field"><label class="lbl">Total Guest Count</label><input type="number" id="fGuests" placeholder="e.g. 40" min="1"/></div>
+      <div class="field"><label class="lbl">Food Arrival Time</label><input type="time" id="fTime"/></div>
+    </div>
+  </div>
+  <div class="sec-lbl">Delivery Location</div>
+  <div class="card">
+    <div class="chd"><div class="chd-dot"></div><div><h2>Delivery Address</h2><p>Driving from 3338 Cobb Pkwy NW, Acworth GA</p></div></div>
+    <div class="cbd">
+      <div class="field"><label class="lbl">Full Delivery Address</label><input type="text" id="fAddr" placeholder="Street, City, State ZIP" autocomplete="street-address"/></div>
+      <button class="btn btn-ghost" onclick="calcTravel()">Calculate Drive Time &amp; Leave-By Time</button>
+      <div class="tbox" id="tbox">
+        <div class="tbox-lbl">Leave the Store By</div>
+        <div class="tbox-time" id="tLeave">--:--</div>
+        <div class="tbox-det" id="tDet"></div>
+      </div>
+    </div>
+  </div>
+  <div class="grad-line"></div>
+  <button class="btn btn-grn" onclick="goP2()">Continue — Select Menu Items</button>
+</div>
+<div class="page" id="pg2">
+  <button class="back-btn" onclick="goPage(1)">&#8592; Back to Info</button>
+  <div class="hint">Tap a category to expand. Select protein where required, enter quantity, tap <strong>Add to Order</strong>.</div>
+  <div id="menuWrap"></div>
+  <div class="sec-lbl">Current Order</div>
+  <div class="card">
+    <div class="chd"><div class="chd-dot"></div><div><h2>Order Cart</h2><p>Items added</p></div></div>
+    <div class="cbd"><div id="cartList"><div class="cart-empty">No items added yet</div></div></div>
+  </div>
+  <button class="btn btn-org" id="reviewBtn" onclick="goP3()" style="display:none">Review Full Order &amp; Summary</button>
+</div>
+<div class="page" id="pg3">
+  <button class="back-btn" onclick="goPage(2)">&#8592; Back to Menu</button>
+  <div class="grad-line"></div>
+  <div id="sumBody"></div>
+  <div class="sum-card">
+    <div class="sum-hd"><div class="sum-dot"></div>Send to Tyler</div>
+    <div class="sum-body">
+      <p style="font-size:.77rem;color:var(--mut);font-weight:600;margin-bottom:10px">Sends formatted catering sheet to <strong style="color:var(--ink)">tylerhawthorne@hueylueys.com</strong></p>
+      <button class="btn btn-org" onclick="sendEmail()">Send Catering Sheet</button>
+      <div class="eml-st" id="emlSt"></div>
+    </div>
+  </div>
+</div>
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+const ST={name:'',order:'',guests:0,time:'',address:'',leaveTime:'',travelInfo:'',hasBev:false,cart:[]};
+const STORE_LAT=34.0691,STORE_LNG=-84.6388;
+let gChipQty=0;
+
+// ═══════════════════════════════════════════
+// OZ PER PERSON — all confirmed values
+// ═══════════════════════════════════════════
+const OZ={
+  // proteins
+  salsa_chx:3, ground_beef:3, fajita_prot:4, fire_veg:3,
+  // hot sides
+  rice:3, beans:3, queso:3,
+  // tortillas (3 per person x ~1.5oz each)
+  tort_flour:4.5, tort_corn:3.5, tort_hard:3,
+  // cold sides — always clamshell
+  shred_lettuce:3, shred_cheese:2,
+  diced_tom:1, pico:1, sour_cream:1, guac_side:1, pickled_jal:1,
+  // chips & salsa
+  chips_per_bag:20, // persons per bag
+  salsa:1,
+  // mix n match halved
+  guac_app:3,    // full portion (halved = 1.5)
+  queso_app:3,   // full portion (halved = 1.5)
+};
+
+// ═══════════════════════════════════════════
+// CONTAINER FORMULA (from spreadsheet)
+// < 40oz  = 32oz Container (clamshell)
+// < 150oz = Third Pan
+// < 300oz = Half Pan
+// >= 300oz = Full Pan
+// Slot values: Full=1, Half=0.5, Third=0.33, Container=0
+// Wire racks = ROUNDUP(sum of hot slots)
+// Water = racks / 5
+// ═══════════════════════════════════════════
+function getContainer(totalOz){
+  if(totalOz<40)  return{name:'32oz Container',slot:0,hot_eligible:false};
+  if(totalOz<150) return{name:'Third Pan',slot:0.33,hot_eligible:true};
+  if(totalOz<300) return{name:'Half Pan',slot:0.5,hot_eligible:true};
+  return{name:'Full Pan',slot:1,hot_eligible:true};
+}
+function hotPan(guests, ozPerPerson){
+  const totalOz=guests*ozPerPerson;
+  const c=getContainer(totalOz);
+  return{label:c.name,slot:c.slot,totalOz};
+}
+function waterFrac(racks){
+  if(!racks||racks<=0)return null;
+  const g=racks/5;
+  if(g>=1){const w=Math.floor(g),r=g-w;if(r===0)return w+' gallon'+(w>1?'s':'');if(r<=0.25)return(w?w+' and ':'')+'\u00BC gallon';if(r<=0.5)return(w?w+' and ':'')+'\u00BD gallon';if(r<=0.75)return(w?w+' and ':'')+'\u00BE gallon';return(w+1)+' gallons';}
+  if(g<=0.2)return'\u00BC gallon';if(g<=0.5)return'\u00BD gallon';if(g<=0.8)return'\u00BE gallon';return'1 gallon';
+}
+function chipBags(qty){const b=Math.ceil(qty/20);return b+' Large White Bag'+(b>1?'s':'')+' (20 persons/bag)';}
+
+// ═══════════════════════════════════════════
+// UTENSIL TRACKING
+// ═══════════════════════════════════════════
+let U={t9:0,t6:[],ladle:[],sp9:[],sp5:[]};
+function resetU(){U={t9:0,t6:[],ladle:[],sp9:[],sp5:[]};}
+function addU(type,label,n){
+  const cnt=Math.max(1,Math.round(n||1));
+  for(let i=0;i<cnt;i++){
+    if(type==='t9')U.t9++;
+    else if(type==='t6')U.t6.push(label);
+    else if(type==='ladle')U.ladle.push(label);
+    else if(type==='sp9')U.sp9.push(label);
+    else if(type==='sp5')U.sp5.push(label);
+  }
+}
+
+// ═══════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════
+function goPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pg'+n).classList.add('active');
+  ['st1','st2','st3'].forEach((id,i)=>{const el=document.getElementById(id);el.classList.remove('active','done');if(i+1<n)el.classList.add('done');else if(i+1===n)el.classList.add('active');});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goP2(){
+  const nm=document.getElementById('fName').value.trim();
+  const or=document.getElementById('fOrder').value.trim();
+  const gs=parseInt(document.getElementById('fGuests').value);
+  const ti=document.getElementById('fTime').value;
+  const ad=document.getElementById('fAddr').value.trim();
+  if(!nm){alert('Enter your name.');return;}if(!or){alert('Enter order name.');return;}
+  if(!gs||gs<1){alert('Enter total guest count.');return;}if(!ti){alert('Enter arrival time.');return;}if(!ad){alert('Enter delivery address.');return;}
+  ST.name=nm;ST.order=or;ST.guests=gs;ST.time=ti;ST.address=ad;gChipQty=0;ST.hasBev=false;ST.cart=[];
+  buildMenu();goPage(2);
+}
+function goP3(){if(!ST.cart.length){alert('Add at least one item first.');return;}buildSummary();goPage(3);}
+
+// ═══════════════════════════════════════════
+// DRIVE TIME
+// ═══════════════════════════════════════════
+async function calcTravel(){
+  const addr=document.getElementById('fAddr').value.trim();
+  const ti=document.getElementById('fTime').value;
+  if(!addr){alert('Enter delivery address first.');return;}if(!ti){alert('Enter arrival time first.');return;}
+  const box=document.getElementById('tbox');box.classList.add('show');
+  document.getElementById('tLeave').textContent='...';document.getElementById('tDet').textContent='Calculating...';
+  const [h,m]=ti.split(':').map(Number);const arr=new Date();arr.setHours(h,m,0,0);if(arr<new Date())arr.setDate(arr.getDate()+1);
+  try{
+    let lat=null,lng=null,note='';
+    const r1=await fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(addr)+'&limit=1&countrycodes=us',{headers:{'Accept-Language':'en-US','User-Agent':'HueyLueysCatering'}}).then(r=>r.json()).catch(()=>[]);
+    if(r1.length){lat=parseFloat(r1[0].lat);lng=parseFloat(r1[0].lon);}
+    if(lat===null){const zip=(addr.match(/\b(\d{5})\b/)||[])[1];if(zip){const r2=await fetch('https://nominatim.openstreetmap.org/search?format=json&postalcode='+zip+'&countrycodes=us&limit=1',{headers:{'Accept-Language':'en-US','User-Agent':'HueyLueysCatering'}}).then(r=>r.json()).catch(()=>[]);if(r2.length){lat=parseFloat(r2[0].lat);lng=parseFloat(r2[0].lon);note='(ZIP estimate) ';}}}
+    if(lat===null){const cm=(addr.match(/([A-Za-z\s]+),?\s*(GA|Georgia)/i)||[]);if(cm[1]){const r3=await fetch('https://nominatim.openstreetmap.org/search?format=json&city='+encodeURIComponent(cm[1].trim())+'&state=Georgia&countrycodes=us&limit=1',{headers:{'Accept-Language':'en-US','User-Agent':'HueyLueysCatering'}}).then(r=>r.json()).catch(()=>[]);if(r3.length){lat=parseFloat(r3[0].lat);lng=parseFloat(r3[0].lon);note='(City estimate) ';}}}
+    if(lat===null)throw new Error('not found');
+    const R=3958.8,dLat=(lat-STORE_LAT)*Math.PI/180,dLon=(lng-STORE_LNG)*Math.PI/180;
+    const a=Math.sin(dLat/2)**2+Math.cos(STORE_LAT*Math.PI/180)*Math.cos(lat*Math.PI/180)*Math.sin(dLon/2)**2;
+    const miles=R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+    const mins=Math.round(miles*1.35/32*60+5);
+    const disp=mins>=60?Math.floor(mins/60)+'h '+mins%60+'m':mins+' min';
+    const ld=new Date(arr.getTime()-(mins+5)*60*1000);
+    const ls=ld.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('tLeave').textContent=ls;
+    document.getElementById('tDet').textContent=note+miles.toFixed(1)+' miles — about '+disp+' drive';
+    ST.leaveTime=ls;ST.travelInfo=miles.toFixed(1)+' miles, ~'+disp;
+  }catch(e){document.getElementById('tLeave').textContent='Check Manually';document.getElementById('tDet').textContent='Could not locate — verify address and try again.';}
+}
+
+// ═══════════════════════════════════════════
+// MENU DATA
+// ═══════════════════════════════════════════
+const MENU=[
+{id:'apps',title:'Mix N Match Appetizers',desc:'Exactly 2 selections — halved portions',
+ note:'<strong>Select exactly 2 apps.</strong> Each item is portioned at half the guest count. Queso apps include Chips.',type:'mnm',
+ apps:[
+  {id:'a-avo',label:'Avocado Rolls',hasChips:false,ozPP:1,garnish:'Cilantro Cream Dip (32oz Container), Shredded Lettuce Garnish (Clamshell), Pickled Onion Garnish (Clamshell)',uten:'t6'},
+  {id:'a-taq',label:'Brisket Taquitos',hasChips:false,ozPP:1,garnish:'',uten:'t6'},
+  {id:'a-gua',label:'Guacamole',hasChips:false,ozPP:3,garnish:'Pickled Radish Garnish (Clamshell)',uten:'sp5'},
+  {id:'a-rq', label:'Regular Queso',hasChips:true,ozPP:3,garnish:'',uten:'ladle'},
+  {id:'a-sq', label:'Spicy Queso',hasChips:true,ozPP:3,garnish:'Pico de Gallo Garnish (Clamshell)',uten:'ladle'},
+ ]},
+{id:'taco',title:'Taco Bar',desc:'Select protein — Refried Beans &amp; Flour Tortillas auto-included',
+ note:'Select protein. All hot items go on wire racks. Cold sides go in clamshells.',type:'bar',
+ proteins:[
+  {id:'t-chx', label:'Salsa Chicken',ozPP:3,uten:'t6',isMixed:false},
+  {id:'t-beef',label:'Ground Beef',ozPP:3,uten:'sp9',isMixed:false},
+  {id:'t-mix', label:'Mixed: Salsa Chicken + Ground Beef',ozPP:3,uten:'t6',isMixed:true},
+  {id:'t-both',label:'Chicken &amp; Beef +$3',ozPP:3,uten:'t6',isMixed:true},
+ ],
+ tortOzPP:4.5,
+ hotSides:[
+  {lbl:'Mexican Rice',ozPP:3,uten:'sp9'},
+  {lbl:'Refried Beans',ozPP:3,uten:'ladle'},
+ ],
+ coldSides:[
+  {lbl:'Shredded Lettuce',uten:'t6'},
+  {lbl:'Shredded Cheese',uten:'t6'},
+  {lbl:'Diced Tomatoes',uten:null},
+ ],
+ subs:[{id:'ts1',label:'Sub Charro Beans for Refried'},{id:'ts2',label:'Sub White Rice for Mexican Rice'},{id:'ts3',label:'Sub Corn Tortillas',tortOz:3.5},{id:'ts4',label:'Sub Hard Shell Tortillas',tortOz:3}],
+ hasChips:true},
+{id:'nacho',title:'Nacho Bar',desc:'Select protein — Spicy Queso always included',
+ note:'Select protein. All hot items on wire racks. Cold sides in clamshells. No rice or beans.',type:'bar',
+ proteins:[
+  {id:'n-chx', label:'Salsa Chicken',ozPP:3,uten:'t6',isMixed:false},
+  {id:'n-beef',label:'Ground Beef',ozPP:3,uten:'sp9',isMixed:false},
+  {id:'n-veg', label:'Fire Roasted Veggies',ozPP:3,uten:'t6',isMixed:false},
+  {id:'n-mix', label:'Mixed: Salsa Chicken + Ground Beef',ozPP:3,uten:'t6',isMixed:true},
+  {id:'n-both',label:'Chicken &amp; Beef +$3',ozPP:3,uten:'t6',isMixed:true},
+ ],
+ tortOzPP:0,
+ hotSides:[
+  {lbl:'Spicy Queso',ozPP:3,uten:'ladle'},
+ ],
+ coldSides:[
+  {lbl:'Shredded Lettuce',uten:'t6'},
+  {lbl:'Shredded Cheese',uten:'t6'},
+  {lbl:'Diced Tomatoes',uten:null},
+  {lbl:'Sour Cream',uten:'sp5'},
+  {lbl:'Pickled Jalapenos',uten:'t6'},
+ ],
+ subs:[{id:'ns1',label:'Sub Regular Queso for Spicy'}],
+ hasChips:true},
+{id:'fajita',title:'Fajita Bar',desc:'Select protein — Charro Beans &amp; Flour Tortillas auto-included',
+ note:'Select protein. All hot items on wire racks. Cold sides in clamshells.',type:'bar',
+ proteins:[
+  {id:'f-cs', label:'Chicken &amp; Steak',ozPP:4,uten:'t6',isMixed:false},
+  {id:'f-c',  label:'Chicken',ozPP:4,uten:'t6',isMixed:false},
+  {id:'f-s',  label:'Steak',ozPP:4,uten:'t6',isMixed:false},
+  {id:'f-csh',label:'Chicken, Steak &amp; Shrimp',ozPP:4,uten:'t6',isMixed:false},
+  {id:'f-sh', label:'Shrimp',ozPP:3,uten:'t6',isMixed:false},
+  {id:'f-v',  label:'Veggie',ozPP:3,uten:'t6',isMixed:false},
+ ],
+ tortOzPP:4.5,
+ hotSides:[
+  {lbl:'Mexican Rice',ozPP:3,uten:'sp9'},
+  {lbl:'Charro Beans',ozPP:3,uten:'ladle'},
+ ],
+ coldSides:[
+  {lbl:'Shredded Lettuce',uten:'t6'},
+  {lbl:'Shredded Cheese',uten:'t6'},
+  {lbl:'Pico de Gallo',uten:'sp5'},
+  {lbl:'Sour Cream',uten:'sp5'},
+  {lbl:'Guacamole',uten:'sp5'},
+ ],
+ garnish:'Radish Garnish + Lime Wedges',
+ subs:[{id:'fs1',label:'Sub Black Beans for Charro'},{id:'fs2',label:'Sub Refried Beans for Charro'},{id:'fs3',label:'Sub White Rice for Mexican Rice'},{id:'fs4',label:'Sub Corn Tortillas',tortOz:3.5},{id:'fs5',label:'Sub Hard Shell Tortillas',tortOz:3},{id:'fs6',label:'Sub Lettuce Cup'}],
+ hasChips:true},
+{id:'salad',title:'Salads',desc:'Each salad serves 10 persons — select how many',
+ note:'Each salad order = 1 full serving for 10 persons. Dressing goes in a 32oz deli container alongside.',type:'salads',
+ items:[
+  {id:'s-house',label:'House Salad',dressing:'Cilantro Ranch',dressSubs:['Mango Vinaigrette','Oregano Vinaigrette','Chipotle Ranch']},
+  {id:'s-kale', label:"Farmer's Kale Salad",dressing:'Oregano Vinaigrette (tossed)',dressSubs:['Mango Vinaigrette (on side)','Cilantro Ranch (on side)','Chipotle Ranch (on side)']},
+  {id:'s-mex',  label:'Mexican Chopped Salad',dressing:'Mango Vinaigrette',extra:'Grilled Chicken — auto-included',dressSubs:['Cilantro Ranch','Oregano Vinaigrette','Chipotle Ranch']},
+ ]},
+{id:'sides',title:'Sides',desc:'Add-on selections',
+ note:'Chips &amp; Queso/Guac: enter guest count. Extra Homemade Salsa: rings in as units. Sour Cream: enter guest count.',type:'sides',
+ items:[
+  {id:'si-rq', label:'Chips &amp; Regular Queso',ozPP:3,byP:true,hasChips:true,subs:[{id:'si-rq1',lbl:'Sub Spicy Queso'}],utenH:'ladle',utenT:'t9'},
+  {id:'si-sq', label:'Chips &amp; Spicy Queso',ozPP:3,byP:true,hasChips:true,subs:[{id:'si-sq1',lbl:'Sub Regular Queso'}],utenH:'ladle',utenT:'t9'},
+  {id:'si-cg', label:'Chips &amp; Guacamole',ozPP:3,byP:true,hasChips:true,subs:[],utenH:'sp5',utenT:'t9'},
+  {id:'si-sal',label:'Extra Homemade Salsa',ozPP:1,byP:false,hasChips:false,each:10,subs:[],utenH:'ladle',utenT:null},
+  {id:'si-sc', label:'Sour Cream',ozPP:1,byP:true,hasChips:false,subs:[],utenH:'sp5',utenT:null},
+ ]},
+{id:'dessert',title:'Desserts',desc:'Rings in as orders — 1 x 12" Cake Pan per order',
+ note:'Each order = 1 x 12" Cake Pan. Sopapillas tossed in cinnamon sugar. Brownies covered in powdered sugar. NOT on wire racks.',type:'desserts',
+ items:[
+  {id:'d-sop',label:'Sopapillas',syrup:'Raw Honey',syrSubs:['Caramel Syrup','Chocolate Syrup']},
+  {id:'d-bro',label:'Double Fudge Brownies',syrup:'Chocolate Syrup + Caramel Syrup',syrSubs:[]},
+ ]},
+{id:'bev',title:'Beverages',desc:'Rings in as jugs — 8 persons per gallon jug',
+ note:'Each unit = 1 gallon jug. Fill to top, attach correct label sticker.',type:'beverages',
+ items:[
+  {id:'b-sw', label:'Sweet Tea',hasCups:true},
+  {id:'b-un', label:'Unsweet Tea',hasCups:true},
+  {id:'b-lem',label:'Pink Lemonade',hasCups:false},
+  {id:'b-pea',label:'Peach Tea',hasCups:false,extra:'Peach Monin Syrup (10 oz per jug)'},
+ ]},
+];
+
+// ═══════════════════════════════════════════
+// MENU RENDER
+// ═══════════════════════════════════════════
+function buildMenu(){
+  const w=document.getElementById('menuWrap');w.innerHTML='';
+  MENU.forEach((cat,ci)=>{
+    const d=document.createElement('div');d.className='cat';
+    d.innerHTML='<div class="cat-hd" onclick="togCat('+ci+')">'
+      +'<div><div class="cat-title">'+cat.title+'</div><div class="cat-desc">'+cat.desc+'</div></div>'
+      +'<div class="cat-right"><span class="cat-badge" id="cb_'+ci+'">0</span>'
+      +'<svg class="chev" id="ch_'+ci+'" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>'
+      +'<div class="cat-body" id="catb_'+ci+'"><div class="cat-note">'+cat.note+'</div>'+renderCat(cat,ci)+'</div>';
+    w.appendChild(d);
+  });
+}
+function togCat(ci){document.getElementById('catb_'+ci).classList.toggle('open');document.getElementById('ch_'+ci).classList.toggle('open');}
+function bdg(ci,catId){const cnt=ST.cart.filter(c=>c.catId===catId).length;const el=document.getElementById('cb_'+ci);if(el){el.textContent=cnt;el.classList.toggle('on',cnt>0);}}
+function renderCat(cat,ci){
+  if(cat.type==='mnm')return rMNM(cat,ci);
+  if(cat.type==='bar')return rBar(cat,ci);
+  if(cat.type==='salads')return rSalads(cat,ci);
+  if(cat.type==='sides')return rSides(cat,ci);
+  if(cat.type==='desserts')return rDesserts(cat,ci);
+  if(cat.type==='beverages')return rBevs(cat,ci);
+  return '';
+}
+
+// MIX N MATCH
+function rMNM(cat,ci){
+  return '<div style="padding:13px"><div class="mnm-sec">'
+    +'<div class="mnm-hd">Select Exactly 2 <span class="rbadge org">REQUIRED</span></div>'
+    +'<div class="mnm-sub">Each item calculated at half the guest count</div>'
+    +cat.apps.map(a=>'<div class="mnm-opt" id="ml_'+a.id+'" onclick="togM(\''+a.id+'\')">'
+      +'<input type="checkbox" id="m_'+a.id+'"/> '+a.label+'</div>').join('')
+    +'<div class="mnm-err" id="me_'+ci+'">Select exactly 2 appetizers.</div>'
+    +'</div><div class="qty-row">'
+    +'<span style="font-size:.7rem;color:var(--mut);font-weight:700">Guest Count:</span>'
+    +'<input class="qty-in" type="number" id="mq_'+ci+'" min="1" placeholder="0"/>'
+    +'<span class="qty-unit">persons</span>'
+    +'<button class="add-btn" onclick="addMNM(\''+cat.id+'\','+ci+')">Add to Order</button>'
+    +'<span class="added-tag" id="at_'+cat.id+'">Added</span></div></div>';
+}
+function togM(id){const cb=document.getElementById('m_'+id);const lb=document.getElementById('ml_'+id);lb.classList.toggle('sel-org',cb.checked);}
+function addMNM(catId,ci){
+  const cat=MENU.find(c=>c.id===catId);
+  const sel=cat.apps.filter(a=>document.getElementById('m_'+a.id)?.checked);
+  const err=document.getElementById('me_'+ci);
+  if(sel.length!==2){err.classList.add('show');return;}
+  err.classList.remove('show');
+  const qty=parseInt(document.getElementById('mq_'+ci)?.value);
+  if(!qty||qty<1){alert('Enter guest count.');return;}
+  const half=Math.ceil(qty/2);
+  // hot rows for wire rack
+  const hotRows=[];const coldRows=[];const ud=[];
+  sel.forEach(a=>{
+    const totalOz=half*a.ozPP;
+    const c=getContainer(totalOz);
+    const row={lbl:a.label,container:c.name,slot:c.slot,totalOz,isHot:true};
+    hotRows.push(row);
+    if(a.garnish)coldRows.push({lbl:'Garnish',container:'Clamshell / 32oz Container',notes:a.garnish});
+    ud.push({type:a.uten,label:a.label,n:1});
+    if(a.hasChips)gChipQty=Math.max(gChipQty,qty);
+  });
+  // queso sides note
+  const hasQ=sel.some(a=>a.id.includes('q'));
+  const chipNote=hasQ?chipBags(qty):'';
+  ST.cart=ST.cart.filter(c=>c.catId!==catId);
+  ST.cart.push({id:catId,catId,name:'Mix N Match Apps',qty,label:sel.map(a=>a.label).join(' + '),sub:'',hotRows,coldRows,chipNote,ud,type:'mnm',hasChips:hasQ});
+  document.getElementById('at_'+catId)?.classList.add('on');rCart();bdg(ci,catId);
+}
+
+// BAR
+function rBar(cat,ci){
+  const po=cat.proteins.map(p=>'<div class="sel-opt" id="po_'+cat.id+'_'+p.id+'" onclick="selP(\''+cat.id+'\',\''+p.id+'\')">'
+    +'<input type="radio" name="pr_'+cat.id+'" value="'+p.id+'"/> '+p.label+'</div>').join('');
+  const ss=cat.subs.length?'<button class="sub-toggle" onclick="togSP(\'sb_'+cat.id+'\')">Substitutions</button>'
+    +'<div class="sub-panel" id="sb_'+cat.id+'"><div class="sub-panel-hd">Select substitution:</div>'
+    +cat.subs.map(s=>'<div class="sub-item" id="si_'+s.id+'" onclick="selSub(\''+cat.id+'\',\''+s.id+'\')">'
+      +'<input type="radio" name="sub_'+cat.id+'" value="'+s.id+'"/> '+s.label+'</div>').join('')+'</div>':'';
+  return '<div style="padding:13px"><div class="req-sec org"><div class="req-hd org">Protein <span class="rbadge org">REQUIRED</span></div>'+po+'</div>'
+    +ss+'<div class="qty-row">'
+    +'<span style="font-size:.7rem;color:var(--mut);font-weight:700">Guest Count:</span>'
+    +'<input class="qty-in" type="number" id="qty_'+cat.id+'" min="1" placeholder="0"/>'
+    +'<span class="qty-unit">persons</span>'
+    +'<button class="add-btn" onclick="addBar(\''+cat.id+'\','+ci+')">Add to Order</button>'
+    +'<span class="added-tag" id="at_'+cat.id+'">Added</span></div></div>';
+}
+function selP(catId,pid){const cat=MENU.find(c=>c.id===catId);cat.proteins.forEach(p=>{const el=document.getElementById('po_'+catId+'_'+p.id);if(el){el.classList.toggle('sel-org',p.id===pid);el.querySelector('input').checked=(p.id===pid);}});}
+function togSP(id){document.getElementById(id).classList.toggle('open');}
+function selSub(catId,sid){const cat=MENU.find(c=>c.id===catId);cat.subs.forEach(s=>{const el=document.getElementById('si_'+s.id);if(el){el.classList.toggle('sel-org',s.id===sid);el.querySelector('input').checked=(s.id===sid);}});}
+
+function addBar(catId,ci){
+  const cat=MENU.find(c=>c.id===catId);
+  const pr=document.querySelector('input[name="pr_'+catId+'"]:checked');
+  if(!pr){alert('Select a protein first.');return;}
+  const qty=parseInt(document.getElementById('qty_'+catId)?.value);
+  if(!qty||qty<1){alert('Enter guest count.');return;}
+  const prot=cat.proteins.find(p=>p.id===pr.value);
+  const subR=document.querySelector('input[name="sub_'+catId+'"]:checked');
+  const sub=subR?cat.subs.find(s=>s.id===subR.value):null;
+  const hotRows=[];const coldRows=[];const ud=[];
+
+  // PROTEIN — on wire rack
+  if(prot.isMixed){
+    const h=Math.ceil(qty/2);
+    ['Salsa Chicken','Ground Beef'].forEach((lbl,i)=>{
+      const oz=h*3;const c=getContainer(oz);
+      hotRows.push({lbl:lbl+' (half)',container:c.name,slot:c.slot,totalOz:oz});
+      ud.push({type:i===0?'t6':'sp9',label:lbl,n:1});
+    });
+  } else {
+    const oz=qty*prot.ozPP;const c=getContainer(oz);
+    hotRows.push({lbl:prot.label,container:c.name,slot:c.slot,totalOz:oz});
+    ud.push({type:prot.uten,label:prot.label,n:1});
+  }
+
+  // TORTILLAS — on wire rack
+  let tortOz=cat.tortOzPP;
+  if(sub&&sub.tortOz)tortOz=sub.tortOz;
+  if(tortOz>0){
+    const oz=qty*tortOz;const c=getContainer(oz);
+    const tortLbl=sub&&sub.tortOz?sub.label.replace(/^Sub /,''):'Flour Tortillas (3 per person)';
+    hotRows.push({lbl:tortLbl,container:c.name,slot:c.slot,totalOz:oz});
+    ud.push({type:'t6',label:'Tortillas',n:1});
+  }
+
+  // HOT SIDES — on wire rack
+  cat.hotSides.forEach(s=>{
+    let lbl=s.lbl;
+    if(sub){if((sub.id==='ts1')&&lbl==='Refried Beans')lbl='Charro Beans';if((sub.id==='fs1')&&lbl==='Charro Beans')lbl='Black Beans';if((sub.id==='fs2')&&lbl==='Charro Beans')lbl='Refried Beans';if((sub.id==='ts2'||sub.id==='fs3')&&lbl==='Mexican Rice')lbl='White Rice';}
+    const oz=qty*s.ozPP;const c=getContainer(oz);
+    hotRows.push({lbl:lbl,container:c.name,slot:c.slot,totalOz:oz});
+    ud.push({type:s.uten,label:lbl,n:1});
+  });
+
+  // COLD SIDES — always clamshell
+  cat.coldSides.forEach(s=>{
+    coldRows.push({lbl:s.lbl,container:'32oz Container'});
+    if(s.uten)ud.push({type:s.uten,label:s.lbl,n:1});
+  });
+
+  // Garnish (Fajita)
+  if(cat.garnish)coldRows.push({lbl:'Garnish',container:'Clamshell',notes:cat.garnish});
+
+  // Chips
+  if(cat.hasChips)gChipQty=Math.max(gChipQty,qty);
+
+  ST.cart=ST.cart.filter(c=>c.catId!==catId);
+  ST.cart.push({id:catId,catId,name:cat.title,qty,label:prot.label+(sub?' + '+sub.label:''),sub:sub?sub.label:'',hotRows,coldRows,chipNote:'',ud,type:'bar',hasChips:cat.hasChips});
+  document.getElementById('at_'+catId)?.classList.add('on');rCart();bdg(ci,catId);
+}
+
+// SALADS
+function rSalads(cat,ci){
+  return cat.items.map(s=>'<div class="mitem"><div class="mi-name">'+s.label+'</div>'
+    +(s.extra?'<div style="font-size:.71rem;color:var(--grn);font-weight:700;margin-top:4px">'+s.extra+'</div>':'')
+    +'<div style="margin-top:9px"><div style="font-size:.66rem;font-weight:700;color:var(--grn);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Dressing Substitution</div>'
+    +s.dressSubs.map((d,di)=>'<div class="sub-item" id="drs_'+s.id+'_'+di+'" onclick="selDr(\''+s.id+'\','+di+')"><input type="radio" name="dr_'+s.id+'" value="'+d+'"/> '+d+'</div>').join('')+'</div>'
+    +'<div class="qty-row"><span style="font-size:.7rem;color:var(--mut);font-weight:700">How many:</span>'
+    +'<input class="qty-in" type="number" id="qty_'+s.id+'" min="1" placeholder="0"/>'
+    +'<span class="qty-unit">salads</span>'
+    +'<button class="add-btn" onclick="addSalad(\''+cat.id+'\',\''+s.id+'\','+ci+')">Add to Order</button>'
+    +'<span class="added-tag" id="at_'+s.id+'">Added</span></div></div>').join('');
+}
+function selDr(sid,di){
+  const allDivs=document.querySelectorAll('[id^="drs_'+sid+'_"]');
+  allDivs.forEach(el=>{el.classList.remove('sel-org');if(el.querySelector('input'))el.querySelector('input').checked=false;});
+  const el=document.getElementById('drs_'+sid+'_'+di);
+  if(el){el.classList.add('sel-org');if(el.querySelector('input'))el.querySelector('input').checked=true;}
+}
+function addSalad(catId,sid,ci){
+  const cat=MENU.find(c=>c.id===catId);const s=cat.items.find(x=>x.id===sid);
+  const qty=parseInt(document.getElementById('qty_'+sid)?.value);if(!qty||qty<1){alert('Enter quantity.');return;}
+  const dr=document.querySelector('input[name="dr_'+sid+'"]:checked');const dressing=dr?dr.value:s.dressing;
+  const coldRows=[
+    {lbl:qty+' x '+s.label,container:'Cold Pan / Cold Display'},
+    {lbl:'Dressing: '+dressing,container:'32oz Deli Container'},
+  ];
+  if(s.extra)coldRows.push({lbl:s.extra,container:'Included'});
+  ST.cart.push({id:sid,catId,name:s.label,qty,label:qty+' '+s.label+(qty>1?'s':''),sub:dressing,hotRows:[],coldRows,chipNote:'',ud:[{type:'t6',label:s.label,n:qty},{type:'ladle',label:'Dressing',n:qty}],type:'salad'});
+  document.getElementById('at_'+sid)?.classList.add('on');rCart();bdg(ci,catId);
+}
+
+// SIDES
+function rSides(cat,ci){
+  return cat.items.map(s=>'<div class="mitem"><div class="mi-name">'+s.label+'</div>'
+    +(s.subs.length?'<button class="sub-toggle" onclick="togSP(\'sbsi_'+s.id+'\')">Substitutions</button>'
+      +'<div class="sub-panel" id="sbsi_'+s.id+'"><div class="sub-panel-hd">Select substitution:</div>'
+      +s.subs.map((sb,si)=>'<div class="sub-item" id="sbopt_'+s.id+'_'+si+'" onclick="selSubOpt(\''+s.id+'\','+si+')">'
+        +'<input type="radio" name="sbsi_'+s.id+'" value="'+sb.id+'"/> '+sb.lbl+'</div>').join('')+'</div>':'')
+    +'<div class="qty-row"><span style="font-size:.7rem;color:var(--mut);font-weight:700">'+(s.byP?'Guest Count:':'How many:')+'</span>'
+    +'<input class="qty-in" type="number" id="qty_'+s.id+'" min="1" placeholder="0"/>'
+    +'<span class="qty-unit">'+(s.byP?'persons':'units')+'</span>'
+    +'<button class="add-btn" onclick="addSide(\''+cat.id+'\',\''+s.id+'\','+ci+')">Add to Order</button>'
+    +'<span class="added-tag" id="at_'+s.id+'">Added</span></div></div>').join('');
+}
+function selSubOpt(sid,idx){
+  const allD=document.querySelectorAll('[id^="sbopt_'+sid+'_"]');
+  allD.forEach(el=>{el.classList.remove('sel-org');if(el.querySelector('input'))el.querySelector('input').checked=false;});
+  const el=document.getElementById('sbopt_'+sid+'_'+idx);
+  if(el){el.classList.add('sel-org');if(el.querySelector('input'))el.querySelector('input').checked=true;}
+}
+function addSide(catId,sid,ci){
+  const cat=MENU.find(c=>c.id===catId);const s=cat.items.find(x=>x.id===sid);
+  const qty=parseInt(document.getElementById('qty_'+sid)?.value);if(!qty||qty<1){alert('Enter quantity.');return;}
+  const hotRows=[];const coldRows=[];const ud=[];
+  const persons=s.byP?qty:qty*(s.each||10);
+  const oz=persons*s.ozPP;
+  const c=getContainer(oz);
+  // Queso/Guac sides go hot on rack; Sour Cream and salsa go cold
+  if(s.id.includes('rq')||s.id.includes('sq')||s.id.includes('cg')){
+    hotRows.push({lbl:s.label,container:c.name,slot:c.slot,totalOz:oz});
+    if(s.utenH)ud.push({type:s.utenH,label:s.label,n:1});
+    if(s.utenT)ud.push({type:s.utenT,label:'Chips',n:1});
+  } else {
+    coldRows.push({lbl:s.label,container:'32oz Container'});
+    if(s.utenH)ud.push({type:s.utenH,label:s.label,n:1});
+  }
+  if(s.hasChips)gChipQty=Math.max(gChipQty,persons);
+  const subR=document.querySelector('input[name="sbsi_'+sid+'"]:checked');
+  const sub=subR?s.subs.find(x=>x.id===subR.value)?.lbl||'':'';
+  const lbl=s.byP?qty+' persons':qty+' '+(s.label)+(qty>1?'s':'');
+  ST.cart.push({id:sid,catId,name:s.label,qty,label:lbl,sub,hotRows,coldRows,chipNote:'',ud,type:'side'});
+  document.getElementById('at_'+sid)?.classList.add('on');rCart();bdg(ci,catId);
+}
+
+// DESSERTS
+function rDesserts(cat,ci){
+  return cat.items.map(d=>'<div class="mitem"><div class="mi-name">'+d.label+'</div>'
+    +(d.syrSubs.length?'<button class="sub-toggle" onclick="togSP(\'sbds_'+d.id+'\')">Syrup Substitution</button>'
+      +'<div class="sub-panel" id="sbds_'+d.id+'"><div class="sub-panel-hd">Sub default syrup:</div>'
+      +d.syrSubs.map((sb,si)=>'<div class="sub-item" id="syropt_'+d.id+'_'+si+'" onclick="selSyrOpt(\''+d.id+'\','+si+')">'
+        +'<input type="radio" name="syrd_'+d.id+'" value="'+sb+'"/> '+sb+'</div>').join('')+'</div>':'')
+    +'<div class="qty-row"><span style="font-size:.7rem;color:var(--mut);font-weight:700">How many orders:</span>'
+    +'<input class="qty-in" type="number" id="qty_'+d.id+'" min="1" placeholder="0"/>'
+    +'<span class="qty-unit">orders</span>'
+    +'<button class="add-btn" onclick="addDes(\''+cat.id+'\',\''+d.id+'\','+ci+')">Add to Order</button>'
+    +'<span class="added-tag" id="at_'+d.id+'">Added</span></div></div>').join('');
+}
+function selSyrOpt(did,idx){
+  const allD=document.querySelectorAll('[id^="syropt_'+did+'_"]');
+  allD.forEach(el=>{el.classList.remove('sel-org');if(el.querySelector('input'))el.querySelector('input').checked=false;});
+  const el=document.getElementById('syropt_'+did+'_'+idx);
+  if(el){el.classList.add('sel-org');if(el.querySelector('input'))el.querySelector('input').checked=true;}
+}
+function addDes(catId,did,ci){
+  const cat=MENU.find(c=>c.id===catId);const d=cat.items.find(x=>x.id===did);
+  const qty=parseInt(document.getElementById('qty_'+did)?.value);if(!qty||qty<1){alert('Enter quantity.');return;}
+  const subR=document.querySelector('input[name="syrd_'+did+'"]:checked');const syrup=subR?subR.value:d.syrup;
+  const coldRows=[
+    {lbl:d.label,container:qty+' x 12" Cake Pan'+(qty>1?'s':'')},
+    {lbl:'Syrup: '+syrup,container:'32oz Container'},
+  ];
+  ST.cart.push({id:did,catId,name:d.label,qty,label:qty+' order'+(qty>1?'s':'')+' of '+d.label,sub:syrup,hotRows:[],coldRows,chipNote:'',ud:[{type:'t9',label:d.label,n:qty},{type:'ladle',label:'Syrup',n:qty}],type:'dessert'});
+  document.getElementById('at_'+did)?.classList.add('on');rCart();bdg(ci,catId);
+}
+
+// BEVERAGES
+function rBevs(cat,ci){
+  return cat.items.map(b=>'<div class="mitem"><div class="mi-name">'+b.label+'</div>'
+    +'<div class="qty-row"><span style="font-size:.7rem;color:var(--mut);font-weight:700">How many jugs:</span>'
+    +'<input class="qty-in" type="number" id="qty_'+b.id+'" min="1" placeholder="0"/>'
+    +'<span class="qty-unit">jugs</span>'
+    +'<button class="add-btn" onclick="addBev(\''+cat.id+'\',\''+b.id+'\','+ci+')">Add to Order</button>'
+    +'<span class="added-tag" id="at_'+b.id+'">Added</span></div></div>').join('');
+}
+function addBev(catId,bid,ci){
+  const cat=MENU.find(c=>c.id===catId);const b=cat.items.find(x=>x.id===bid);
+  const qty=parseInt(document.getElementById('qty_'+bid)?.value);if(!qty||qty<1){alert('Enter quantity.');return;}
+  const persons=qty*8;
+  const coldRows=[
+    {lbl:qty+' x '+b.label,container:qty+' Gallon Jug'+(qty>1?'s':'')},
+    {lbl:'Ice',container:icePan(persons)},
+  ];
+  if(b.hasCups)coldRows.push({lbl:'Plastic Cups',container:ST.guests+' cups (1 per guest)'});
+  if(b.extra)coldRows.push({lbl:b.extra,container:'Per jug'});
+  ST.hasBev=true;
+  ST.cart.push({id:bid,catId,name:b.label,qty,label:qty+' '+b.label+(qty>1?'s':''),sub:'',hotRows:[],coldRows,chipNote:'',ud:[{type:'sp9',label:'Ice',n:1}],type:'bev',hasCups:b.hasCups});
+  document.getElementById('at_'+bid)?.classList.add('on');rCart();bdg(ci,catId);
+}
+function icePan(persons){
+  const full=Math.floor(persons/15),rem=persons-full*15,half=rem>0?Math.ceil(rem/8):0;
+  const parts=[];if(full>0)parts.push(full+' Full Pan'+(full>1?'s':'')+' Cold');if(half>0)parts.push(half+' Half Pan'+(half>1?'s':'')+' Cold');
+  return parts.join(' + ')||'1 Half Pan Cold';
+}
+
+// CART
+function removeItem(id){
+  ST.cart=ST.cart.filter(c=>c.id!==id);document.getElementById('at_'+id)?.classList.remove('on');
+  gChipQty=0;ST.hasBev=false;
+  ST.cart.forEach(c=>{if(c.hasChips)gChipQty=Math.max(gChipQty,c.qty);if(c.type==='bev')ST.hasBev=true;});
+  rCart();MENU.forEach((_,ci)=>{const catId=MENU[ci].id;bdg(ci,catId);});
+}
+function rCart(){
+  const list=document.getElementById('cartList');const btn=document.getElementById('reviewBtn');
+  if(!ST.cart.length){list.innerHTML='<div class="cart-empty">No items added yet</div>';btn.style.display='none';return;}
+  btn.style.display='block';
+  list.innerHTML=ST.cart.map(c=>'<div class="cart-item"><div class="ci-info"><div class="ci-name">'+c.name+'</div><div class="ci-sub">'+c.label+'</div>'+(c.sub&&c.sub!==c.label?'<div style="font-size:.69rem;color:var(--mut);font-weight:600">'+c.sub+'</div>':'')+'</div><button class="ci-rm" onclick="removeItem(\''+c.id+'\')">Remove</button></div>').join('');
+}
+
+// ═══════════════════════════════════════════
+// SUMMARY
+// ═══════════════════════════════════════════
+function buildSummary(){
+  const arr=ST.time?new Date('1970-01-01T'+ST.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'--';
+  const guests=ST.guests||0;
+
+  // Calc utensils
+  resetU();ST.cart.forEach(c=>(c.ud||[]).forEach(u=>addU(u.type,u.label,u.n)));
+  if(gChipQty>0)U.t9=Math.max(U.t9,1);
+
+  // Wire racks = ROUNDUP(sum of all hot slots)
+  let totalSlots=0;
+  ST.cart.forEach(c=>(c.hotRows||[]).forEach(r=>{if(r.slot)totalSlots+=r.slot;}));
+  const totalRacks=Math.ceil(totalSlots);
+  const wtr=waterFrac(totalRacks);
+
+  // Guest supplies
+  const mints=Math.ceil(guests/2);const qCards=Math.ceil(guests/2);
+  const tents=Math.min(2,Math.ceil(guests/10)||1);const cups=ST.hasBev?guests:0;
+
+  let html='';
+
+  // ORDER INFO
+  html+='<div class="sum-card"><div class="sum-hd"><div class="sum-dot"></div>Order Info</div><div class="sum-body">'
+    +'<div class="info-chip">Driver: <strong>'+ST.name+'</strong></div>'
+    +'<div class="info-chip">Order: <strong>'+ST.order+'</strong></div>'
+    +'<div class="info-chip">Total Guests: <strong>'+guests+'</strong></div>'
+    +'<div class="info-chip">Arrival Time: <strong>'+arr+'</strong></div>'
+    +'<div class="info-chip">Address: <strong>'+ST.address+'</strong></div>'
+    +(ST.leaveTime?'<div class="info-chip info-chip-org">Leave Store By: <strong style="font-size:1.05rem;color:var(--org)">'+ST.leaveTime+'</strong>'+(ST.travelInfo?' &bull; '+ST.travelInfo:'')+'</div>':'')
+    +'</div></div>';
+
+  // HOT ITEMS — WIRE RACK
+  const allHotRows=[];ST.cart.forEach(c=>(c.hotRows||[]).forEach(r=>allHotRows.push({...r,from:c.name})));
+  if(allHotRows.length){
+    html+='<div class="sum-card"><div class="sum-hd"><div class="sum-dot"></div>Hot Items — Wire Rack</div><div class="sum-body">';
+    // Group by source
+    ST.cart.forEach(c=>{
+      if(!c.hotRows||!c.hotRows.length)return;
+      html+='<div class="rack-block"><div class="rack-title">'+c.name+' &mdash; '+c.label+'</div>';
+      c.hotRows.forEach(r=>{html+='<div class="rack-row"><span class="rack-item">'+r.lbl+'</span><span class="rack-val">'+r.container+'</span></div>';});
+      html+='</div>';
+    });
+    html+='</div></div>';
+  }
+
+  // COLD ITEMS — CLAMSHELLS
+  const hasCold=ST.cart.some(c=>c.coldRows&&c.coldRows.length);
+  if(hasCold){
+    html+='<div class="sum-card"><div class="sum-hd"><div class="sum-dot"></div>Cold Items &amp; Clamshells</div><div class="sum-body">';
+    ST.cart.forEach(c=>{
+      if(!c.coldRows||!c.coldRows.length)return;
+      html+='<div class="cold-block"><div class="cold-title">'+c.name+'</div>';
+      c.coldRows.forEach(r=>{html+='<div class="cold-row"><span class="cold-item">'+r.lbl+(r.notes?' <em style="font-size:.69rem;color:var(--mut)">'+r.notes+'</em>':'')+'</span><span class="cold-val">'+r.container+'</span></div>';});
+      html+='</div>';
+    });
+    html+='</div></div>';
+  }
+
+  // CHIPS & SALSA
+  if(gChipQty>0){
+    const salsaOz=gChipQty*1;const salsaC=getContainer(salsaOz);
+    html+='<div class="sum-card"><div class="sum-hd"><div class="sum-dot"></div>Chips &amp; Salsa</div><div class="sum-body">'
+      +'<div class="chips-block"><div class="chips-title">Combined Total Across Order</div>'
+      +'<div class="chips-row"><span style="font-weight:600">Chips</span><span style="color:var(--org);font-weight:800">'+chipBags(gChipQty)+'</span></div>'
+      +'<div class="chips-row"><span style="font-weight:600">Salsa</span><span style="color:var(--org);font-weight:800">'+salsaC.name+'</span></div>'
+      +'</div></div></div>';
+  }
+
+  // UTENSILS
+  const uLines=[];
+  const t6u=[...new Set(U.t6)];const totalT=U.t9+t6u.length;
+  if(totalT>0){const parts=[];if(U.t9>0)parts.push(U.t9+' Large Tong'+(U.t9>1?'s':'')+' &mdash; Chips / Sopapillas / Brownies');t6u.forEach(l=>parts.push('1 Small Tong &mdash; '+l));uLines.push({name:totalT+' Tong'+(totalT>1?'s':'')+' Total',detail:parts.join('<br>')});}
+  const lU=[...new Set(U.ladle)];if(lU.length)uLines.push({name:lU.length+' Ladle'+(lU.length>1?'s':'')+' 2oz',detail:lU.join(', ')});
+  const s9U=[...new Set(U.sp9)];if(s9U.length)uLines.push({name:s9U.length+' Black 9" Spoon'+(s9U.length>1?'s':'')+' (Large)',detail:s9U.join(', ')});
+  const s5U=[...new Set(U.sp5)];if(s5U.length)uLines.push({name:s5U.length+' Black 5" Spoon'+(s5U.length>1?'s':'')+' (Small)',detail:s5U.join(', ')});
+  if(uLines.length){
+    html+='<div class="sum-card"><div class="sum-hd"><div class="sum-dot"></div>Utensils Needed</div><div class="sum-body">'
+      +'<div class="uten-block"><div class="uten-title">1 utensil per container/pan</div>'
+      +uLines.map(u=>'<div class="uten-row"><div class="uten-name">'+u.name+'</div><div class="uten-detail">'+u.detail+'</div></div>').join('')
+      +'</div></div></div>';
+  }
+
+  // WHAT TO BRING
+  html+='<div class="sum-card"><div class="sum-hd"><div class="sum-dot"></div>What to Bring &mdash; Based on '+guests+' Guests</div><div class="sum-body">'
+    +'<div class="always-row"><span class="always-item">Plates</span><span class="always-qty">'+guests+'</span></div>'
+    +'<div class="always-row"><span class="always-item">Utensils (cutlery)</span><span class="always-qty">'+guests+'</span></div>'
+    +'<div class="always-row"><span class="always-item">Napkins</span><span class="always-qty">'+guests+'</span></div>'
+    +'<div class="always-row"><span class="always-item">Mints</span><span class="always-qty">'+mints+'</span></div>'
+    +'<div class="always-row"><span class="always-item">Queso Cards</span><span class="always-qty">'+qCards+'</span></div>'
+    +(cups>0?'<div class="always-row"><span class="always-item">Plastic Cups (beverage)</span><span class="always-qty">'+cups+'</span></div>':'')
+    +'<div class="always-row"><span class="always-item">Pop-Up Tents</span><span class="always-qty">'+tents+'</span></div>'
+    +'<div class="always-row"><span class="always-item">Business Cards</span><span class="always-qty">3</span></div>'
+    +'<div class="always-row"><span class="always-item">Catering Flyers</span><span class="always-qty">3</span></div>'
+    +'<div class="always-row"><span class="always-item">Steak Knife</span><span class="always-qty">1</span></div>'
+    +'<div class="always-row"><span class="always-item">Rag</span><span class="always-qty">1</span></div>'
+    +'<div class="always-row"><span class="always-item">Gloves</span><span class="always-qty">4</span></div>'
+    +'<div class="always-row"><span class="always-item">Lighters</span><span class="always-qty">1</span></div>'
+    +'</div></div>';
+
+  // WIRE RACKS & WATER
+  html+='<div class="sum-card"><div class="sum-hd"><div class="sum-dot"></div>Wire Racks &amp; Setup</div><div class="sum-body">'
+    +'<div class="always-row"><span class="always-item">Wire Racks Needed</span><span class="always-qty">'+totalRacks+'</span></div>'
+    +'<div class="always-row"><span class="always-item">Full Pans (1 per rack)</span><span class="always-qty">'+totalRacks+'</span></div>'
+    +'<div class="always-row"><span class="always-item">Burners / Sternos</span><span class="always-qty">'+totalRacks+'</span></div>'
+    +(wtr?'<div class="always-row"><span class="always-item">Water</span><span class="always-qty">'+wtr+'</span></div>':'')
+    +'</div></div>';
+
+  html+='<div class="rack-warn">Never leave wire rack spots empty &mdash; water boils out 3x faster when uncovered!</div>';
+
+  // SETUP FLOW
+  const steps=['Mark &ldquo;On the Way&rdquo; in EZ Cater before leaving','Find ideal guest flow start area at venue','Set out Plates, Utensils, Napkins, Queso Cards, Business Cards, Mints, Flyers &amp; Pop-Up Tent','If beverages &mdash; set up ice at sink, pour drinks, place cups. Second tent here.','Set wire racks, light sternos. Sterno tops into white bag inside brown lid bag.','Left to Right: Tortillas or Chips first','Add filler items then hot sides','Chips &amp; Salsa after wire rack section','Cold items / clamshells: Lettuce &rarr; Cheese &rarr; Pico &rarr; Sour Cream &rarr; Guac','Salad (if ordered) then Dessert','Remove all lids &mdash; stack in paper bag','Place correct utensil in each item','Walk setup with rag &mdash; leave it clean','Pack trash, empty water container, head out'];
+  html+='<button class="setup-toggle" onclick="togSetup()">Setup Flow &mdash; Tap to Expand <svg id="sc" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>'
+    +'<div class="setup-body" id="setupBody"><div style="height:10px"></div>'
+    +steps.map((s,i)=>'<div class="flow-step"><div class="flow-num">'+(i+1)+'</div><div>'+s+'</div></div>').join('')+'</div>';
+
+  document.getElementById('sumBody').innerHTML=html;
+}
+function togSetup(){const b=document.getElementById('setupBody');b.classList.toggle('open');document.getElementById('sc').style.transform=b.classList.contains('open')?'rotate(180deg)':'';}
+
+// EMAIL
+function sendEmail(){
+  const arr=ST.time?new Date('1970-01-01T'+ST.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'--';
+  const guests=ST.guests||0;const mints=Math.ceil(guests/2);const qCards=Math.ceil(guests/2);
+  const tents=Math.min(2,Math.ceil(guests/10)||1);const cups=ST.hasBev?guests:0;
+  let totalSlots=0;ST.cart.forEach(c=>(c.hotRows||[]).forEach(r=>{if(r.slot)totalSlots+=r.slot;}));
+  const totalRacks=Math.ceil(totalSlots);const wtr=waterFrac(totalRacks);
+  const SEP='--------------------------------------------';
+  let b='HUEY LUEYS CATERING ORDER\n'+SEP+'\n\nDriver: '+ST.name+'\nOrder: '+ST.order+'\nGuests: '+guests+'\nArrival: '+arr+'\nAddress: '+ST.address+'\n';
+  if(ST.leaveTime)b+='Leave By: '+ST.leaveTime+(ST.travelInfo?' ('+ST.travelInfo+')':'')+'\n';
+  b+='\n'+SEP+'\nHOT ITEMS (Wire Rack)\n'+SEP+'\n';
+  ST.cart.forEach(c=>{if(!c.hotRows||!c.hotRows.length)return;b+='\n'+c.name+' - '+c.label+'\n';c.hotRows.forEach(r=>{b+='  '+r.lbl+': '+r.container+'\n';});});
+  b+='\n'+SEP+'\nCOLD ITEMS & CLAMSHELLS\n'+SEP+'\n';
+  ST.cart.forEach(c=>{if(!c.coldRows||!c.coldRows.length)return;b+='\n'+c.name+'\n';c.coldRows.forEach(r=>{b+='  '+r.lbl+': '+r.container+'\n';});});
+  if(gChipQty>0){const sC=getContainer(gChipQty*1);b+='\nCHIPS & SALSA\n  Chips: '+chipBags(gChipQty)+'\n  Salsa: '+sC.name+'\n';}
+  b+='\n'+SEP+'\nWHAT TO BRING\n'+SEP+'\n';
+  b+='Plates: '+guests+'\nUtensils: '+guests+'\nNapkins: '+guests+'\nMints: '+mints+'\nQueso Cards: '+qCards+'\n';
+  if(cups>0)b+='Plastic Cups: '+cups+'\n';
+  b+='Pop-Up Tents: '+tents+'\nBusiness Cards: 3\nCatering Flyers: 3\nSteak Knife: 1\nRag: 1\nGloves: 4\nLighters: 1\n';
+  b+='\n'+SEP+'\nWIRE RACKS\n'+SEP+'\n';
+  b+='Wire Racks: '+totalRacks+'\nFull Pans: '+totalRacks+'\nBurners/Sternos: '+totalRacks+'\n';
+  if(wtr)b+='Water: '+wtr+'\n';
+  b+='\nSent via Huey Lueys Catering Guide';
+  window.location.href='mailto:tylerhawthorne@hueylueys.com?subject='+encodeURIComponent('Catering: '+ST.order+' - Arrival '+arr)+'&body='+encodeURIComponent(b);
+  setTimeout(()=>{const s=document.getElementById('emlSt');s.className='eml-st ok';s.textContent='Email client opened - tap Send in your mail app.';},800);
+}
+</script>
+</body>
+</html>
