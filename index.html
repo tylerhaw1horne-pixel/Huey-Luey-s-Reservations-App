@@ -732,21 +732,40 @@ function refreshDots() {
 }
 function tryLogin() {
   var u = USERS[pin];
+
   if (u) {
-    me = u.name; isHost = u.host;
+    me = u.name;
+    isHost = u.host;
+
     document.getElementById('mgr-val').textContent = me;
     document.getElementById('host-pill').innerHTML = isHost ? '<div class="host-pill">View Only</div>' : '';
+
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').classList.add('on');
+
     gotoToday();
+
+    if (!syncStarted) {
+      syncStarted = true;
+      startFirebaseSync();
+    }
+
   } else {
     for (var i = 0; i < 4; i++) {
       document.getElementById('d' + i).classList.add('error');
       document.getElementById('d' + i).classList.remove('filled');
     }
+
     document.getElementById('lerr').classList.add('show');
-    setTimeout(function() { pin = ''; refreshDots(); }, 700);
-    setTimeout(function() { document.getElementById('lerr').classList.remove('show'); }, 2500);
+
+    setTimeout(function() {
+      pin = '';
+      refreshDots();
+    }, 700);
+
+    setTimeout(function() {
+      document.getElementById('lerr').classList.remove('show');
+    }, 2500);
   }
 }
 function logout() {
@@ -809,7 +828,7 @@ function showTab(t) {
 // ─── FIREBASE STORAGE ─────────────────────────
 
 var SK = 'hl_res_v3';
-
+var syncStarted = false;
 function startFirebaseSync() {
   db.collection(RES_COLLECTION).onSnapshot(function(snapshot) {
     RES_CACHE = [];
@@ -1152,9 +1171,6 @@ document.addEventListener('keydown', function(e) {
       if (curStep < 2) nextStep(); else saveRes();
     }
   }
-});
-window.addEventListener('load', function() {
-  startFirebaseSync();
 });
 
 
