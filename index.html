@@ -826,9 +826,9 @@ function showTab(t) {
 }
 
 // ─── FIREBASE STORAGE ─────────────────────────
-
 var SK = 'hl_res_v3';
 var syncStarted = false;
+
 function startFirebaseSync() {
   db.collection(RES_COLLECTION).onSnapshot(function(snapshot) {
     RES_CACHE = [];
@@ -840,7 +840,6 @@ function startFirebaseSync() {
     });
 
     saveLocalBackup(RES_CACHE);
-
     renderWeek();
 
     if (document.getElementById('view-gb').classList.contains('active')) {
@@ -852,7 +851,6 @@ function startFirebaseSync() {
     RES_CACHE = loadLocalBackup();
     renderWeek();
   });
-}
 }
 
 function loadAll() {
@@ -878,6 +876,7 @@ function uid() {
 function wISO() {
   return toISO(weekMon);
 }
+
 function getSlots() {
   var iso = wISO(), all = loadAll(), s = {};
 
@@ -898,6 +897,9 @@ function getSlots() {
 
   return s;
 }
+
+
+  
 // ─── RENDER WEEK ──────────────────────────────
 function renderWeek() {
   document.getElementById('wklbl').textContent = fmtWeek(weekMon);
@@ -1158,32 +1160,9 @@ function renderGB() {
       + '<td class="tdsm">' + (esc(r.occasion)||'—') + '</td>'
       + '<td><span class="gbadge ' + es + '">' + labels[es] + '</span></td>'
       + '<td class="tdsm">' + (esc(r.mgrName)||'—') + '</td>';
-    tbody.appendChild(tr);
+      tbody.appendChild(tr);
   });
 }
-
-// ─── KEYBOARD ─────────────────────────────────
-document.addEventListener('keydown', function(e) {
-  if (!document.getElementById('app').classList.contains('on')) {
-    if (e.key >= '0' && e.key <= '9') pk(e.key);
-    if (e.key === 'Backspace') pd();
-    return;
-  }
-
-  if (document.getElementById('overlay').classList.contains('open')) {
-    if (e.key === 'Escape') closeModal();
-
-    if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
-      if (curStep < 2) {
-        nextStep();
-      } else {
-        saveRes();
-      }
-    }
-  }
-});
-
-
 </script>
 
 </body>
