@@ -1141,7 +1141,7 @@ function renderGB() {
 
 // ─── KEYBOARD ─────────────────────────────────
 document.addEventListener('keydown', function(e) {
-  if (document.getElementById('login-screen').style.display !== 'none') {
+  if (!document.getElementById('app').classList.contains('on'))
     if (e.key >= '0' && e.key <= '9') pk(e.key);
     if (e.key === 'Backspace') pd();
     return;
@@ -1153,7 +1153,9 @@ document.addEventListener('keydown', function(e) {
     }
   }
 });
-startFirebaseSync();
+window.addEventListener('load', function() {
+  startFirebaseSync();
+});
 
 
 </script>
