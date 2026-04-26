@@ -834,14 +834,17 @@ function startFirebaseSync() {
     RES_CACHE = [];
 
     snapshot.forEach(function(doc) {
-  var data = doc.data();
-  data.id = doc.id;
-  RES_CACHE.push(data);
-});
+      var data = doc.data();
+      data.id = doc.id;
+      RES_CACHE.push(data);
+    });
 
-saveLocalBackup(RES_CACHE);
+    saveLocalBackup(RES_CACHE);
 
-renderWeek();
+    renderWeek();
+
+    if (document.getElementById('view-gb').classList.contains('active')) {
+      renderGB();
     }
 
   }, function(error) {
@@ -849,6 +852,7 @@ renderWeek();
     RES_CACHE = loadLocalBackup();
     renderWeek();
   });
+}
 }
 
 function loadAll() {
@@ -1160,15 +1164,21 @@ function renderGB() {
 
 // ─── KEYBOARD ─────────────────────────────────
 document.addEventListener('keydown', function(e) {
-  if (!document.getElementById('app').classList.contains('on'))
+  if (!document.getElementById('app').classList.contains('on')) {
     if (e.key >= '0' && e.key <= '9') pk(e.key);
     if (e.key === 'Backspace') pd();
     return;
   }
+
   if (document.getElementById('overlay').classList.contains('open')) {
     if (e.key === 'Escape') closeModal();
+
     if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
-      if (curStep < 2) nextStep(); else saveRes();
+      if (curStep < 2) {
+        nextStep();
+      } else {
+        saveRes();
+      }
     }
   }
 });
