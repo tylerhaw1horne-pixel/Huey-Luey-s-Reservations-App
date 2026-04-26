@@ -551,130 +551,155 @@ border-radius: 9px; padding: 10px 14px; cursor: pointer; transition: all 0.15s;
     <div class="foot-copy">Huey Luey's &copy; 2026</div>
   </div>
 </div>
-
 <!-- ═══ MODAL ═══ -->
 
 <div class="overlay" id="overlay" onclick="bgClose(event)">
   <div class="modal">
 
-```
-<div class="modal-head org" id="mhead">
-  <div class="modal-head-title" id="mtitle">Add Reservation</div>
-  <button class="modal-close" onclick="closeModal()">&#10005;</button>
-</div>
-
-<div class="modal-stepbar">
-  <div class="mstep active" id="ms0"><span class="mstep-n">1</span>Guest Info</div>
-  <div class="mstep" id="ms1"><span class="mstep-n">2</span>Details</div>
-  <div class="mstep" id="ms2"><span class="mstep-n">3</span>Occasion &amp; Status</div>
-</div>
-
-<!-- STEP 1 -->
-<div class="step-page active" id="sp0">
-  <div class="two-col">
-    <div>
-      <div class="sec-lbl">Guest Information</div>
-      <div class="fgrp">
-        <label class="flbl">Guest Name *</label>
-        <input class="finput" id="f-name" type="text" placeholder="Last name or party name" autocomplete="off">
-      </div>
-      <div class="fgrp">
-        <label class="flbl">Phone Number</label>
-        <input class="finput" id="f-phone" type="tel" placeholder="(555) 555-5555">
-      </div>
+    <div class="modal-head org" id="mhead">
+      <div class="modal-head-title" id="mtitle">Add Reservation</div>
+      <button class="modal-close" onclick="closeModal()">&#10005;</button>
     </div>
-    <div>
-      <div class="sec-lbl">Added By</div>
-      <div class="mgr-box">
+
+    <div class="modal-stepbar">
+      <div class="mstep active" id="ms0"><span class="mstep-n">1</span>Guest Info</div>
+      <div class="mstep" id="ms1"><span class="mstep-n">2</span>Details</div>
+      <div class="mstep" id="ms2"><span class="mstep-n">3</span>Occasion &amp; Status</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step-page active" id="sp0">
+      <div class="two-col">
         <div>
-          <div class="mgr-box-lbl">Manager on Duty</div>
-          <div class="mgr-box-name" id="m-mgr">—</div>
+          <div class="sec-lbl">Guest Information</div>
+          <div class="fgrp">
+            <label class="flbl">Guest Name *</label>
+            <input class="finput" id="f-name" type="text" placeholder="Last name or party name" autocomplete="off">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Phone Number</label>
+            <input class="finput" id="f-phone" type="tel" placeholder="(555) 555-5555">
+          </div>
         </div>
-        <div class="mgr-box-time" id="m-time"></div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- STEP 2 -->
-<div class="step-page" id="sp1">
-  <div class="two-col">
-    <div>
-      <div class="sec-lbl">Reservation Details</div>
-      <div class="frow">
-        <div class="fgrp">
-          <label class="flbl">Date *</label>
-          <input class="finput" id="f-date" type="date">
-        </div>
-        <div class="fgrp">
-          <label class="flbl">Arrival Time</label>
-          <input class="finput" id="f-time" type="time">
-        </div>
-      </div>
-      <div class="frow">
-        <div class="fgrp">
-          <label class="flbl">Party Size</label>
-          <input class="finput" id="f-size" type="number" min="1" max="500" placeholder="# guests">
-        </div>
-        <div class="fgrp">
-          <label class="flbl">Kids in Party</label>
-          <input class="finput" id="f-kids" type="number" min="0" max="200" placeholder="# kids">
+        <div>
+          <div class="sec-lbl">Added By</div>
+          <div class="mgr-box">
+            <div>
+              <div class="mgr-box-lbl">Manager on Duty</div>
+              <div class="mgr-box-name" id="m-mgr">—</div>
+            </div>
+            <div class="mgr-box-time" id="m-time"></div>
+          </div>
         </div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;justify-content:center;">
-      <div class="hint-box">
-        <strong>Fri &amp; Sat</strong> = Expected Arrivals<br>
-        Guests we expect based on history — no confirmed booking.<br><br>
-        <strong>Mon – Thu &amp; Sun</strong> = Reservations<br>
-        Confirmed bookings with guest details.
+
+    <!-- STEP 2 -->
+    <div class="step-page" id="sp1">
+      <div class="two-col">
+        <div>
+          <div class="sec-lbl">Reservation Details</div>
+
+          <div class="frow">
+            <div class="fgrp">
+              <label class="flbl">Date *</label>
+              <input class="finput" id="f-date" type="date">
+            </div>
+            <div class="fgrp">
+              <label class="flbl">Arrival Time</label>
+              <input class="finput" id="f-time" type="time">
+            </div>
+          </div>
+
+          <div class="frow">
+            <div class="fgrp">
+              <label class="flbl">Party Size</label>
+              <input class="finput" id="f-size" type="number" min="1" max="500" placeholder="# guests">
+            </div>
+            <div class="fgrp">
+              <label class="flbl">Kids in Party</label>
+              <input class="finput" id="f-kids" type="number" min="0" max="200" placeholder="# kids">
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;justify-content:center;">
+          <div class="hint-box">
+            <strong>Fri &amp; Sat</strong> = Expected Arrivals<br>
+            Guests we expect based on history — no confirmed booking.<br><br>
+            <strong>Mon – Thu &amp; Sun</strong> = Reservations<br>
+            Confirmed bookings with guest details.
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- STEP 3 -->
-<div class="step-page" id="sp2">
-  <div class="two-col">
-    <div>
-      <div class="sec-lbl">Occasion</div>
-      <div class="occ-grid">
-        <button class="occ-btn" onclick="selOcc(this,'Birthday')">&#127874; Birthday</button>
-        <button class="occ-btn" onclick="selOcc(this,'Celebration')">&#127881; Celebration</button>
-        <button class="occ-btn" onclick="selOcc(this,'Anniversary')">&#128145; Anniversary</button>
-        <button class="occ-btn" onclick="selOcc(this,'Family Get Together')">&#128106; Family</button>
-        <button class="occ-btn" onclick="selOcc(this,'Rehearsal Dinner')">&#128141; Rehearsal Dinner</button>
-        <button class="occ-btn" onclick="selOcc(this,'Funeral Gathering')">&#129464; Funeral</button>
-        <button class="occ-btn" onclick="selOcc(this,'Business Dinner')">&#128188; Business Dinner</button>
-        <button class="occ-btn" onclick="selOcc(this,'Other')">&#9998; Other</button>
+    <!-- STEP 3 -->
+    <div class="step-page" id="sp2">
+      <div class="two-col">
+        <div>
+          <div class="sec-lbl">Occasion</div>
+
+          <div class="occ-grid">
+            <button class="occ-btn" onclick="selOcc(this,'Birthday')">&#127874; Birthday</button>
+            <button class="occ-btn" onclick="selOcc(this,'Celebration')">&#127881; Celebration</button>
+            <button class="occ-btn" onclick="selOcc(this,'Anniversary')">&#128145; Anniversary</button>
+            <button class="occ-btn" onclick="selOcc(this,'Family Get Together')">&#128106; Family</button>
+            <button class="occ-btn" onclick="selOcc(this,'Rehearsal Dinner')">&#128141; Rehearsal Dinner</button>
+            <button class="occ-btn" onclick="selOcc(this,'Funeral Gathering')">&#129464; Funeral</button>
+            <button class="occ-btn" onclick="selOcc(this,'Business Dinner')">&#128188; Business Dinner</button>
+            <button class="occ-btn" onclick="selOcc(this,'Other')">&#9998; Other</button>
+          </div>
+
+          <input class="finput" id="f-occasion" type="text" placeholder="Or type a custom occasion…">
+        </div>
+
+        <div>
+          <div class="sec-lbl">Status</div>
+
+          <div class="status-row">
+            <button class="sopt s-confirmed" id="s-confirmed" onclick="setStat('confirmed')">&#10003; Confirmed</button>
+            <button class="sopt" id="s-noshow" onclick="setStat('noshow')">&#10007; No Show</button>
+            <button class="sopt" id="s-cancelled" onclick="setStat('cancelled')">&#8212; Cancelled</button>
+          </div>
+        </div>
       </div>
-      <input class="finput" id="f-occasion" type="text" placeholder="Or type a custom occasion…">
     </div>
-    <div>
-      <div class="sec-lbl">Status</div>
-      <div class="status-row">
-        <button class="sopt s-confirmed" id="s-confirmed" onclick="setStat('confirmed')">&#10003; Confirmed</button>
-        <button class="sopt" id="s-noshow" onclick="setStat('noshow')">&#10007; No Show</button>
-        <button class="sopt" id="s-cancelled" onclick="setStat('cancelled')">&#8212; Cancelled</button>
+
+    <div class="modal-nav">
+      <div>
+        <button class="btn-remove" id="m-del" onclick="delRes()" style="display:none;">Remove</button>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="btn-back" id="m-back" onclick="goStep(curStep-1)" style="display:none;">&#8592; Back</button>
+        <button class="btn-next" id="m-next" onclick="nextStep()">Next Step &#8594;</button>
       </div>
     </div>
-  </div>
-</div>
-
-<div class="modal-nav">
-  <div>
-    <button class="btn-remove" id="m-del" onclick="delRes()" style="display:none;">Remove</button>
-  </div>
-  <div style="display:flex;gap:10px;align-items:center;">
-    <button class="btn-back" id="m-back" onclick="goStep(curStep-1)" style="display:none;">&#8592; Back</button>
-    <button class="btn-next" id="m-next" onclick="nextStep()">Next Step &#8594;</button>
-  </div>
-</div>
-```
 
   </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAepSvbBhAqV7vhLWMxh_ezoaCbzl9Hh_E",
+  authDomain: "hueys-reservations.firebaseapp.com",
+  projectId: "hueys-reservations",
+  storageBucket: "hueys-reservations.firebasestorage.app",
+  messagingSenderId: "282507970140",
+  appId: "1:282507970140:web:aba7fa0c39fccadb1a8899",
+  measurementId: "G-7R065XGX9D"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const RES_COLLECTION = "huey_reservations";
+let RES_CACHE = [];
+</script>
 <script>
 // ─── USERS ───────────────────────────────────
 var USERS = {
@@ -781,25 +806,75 @@ function showTab(t) {
   if (t === 'gb') renderGB();
 }
 
-// ─── STORAGE ──────────────────────────────────
+// ─── FIREBASE STORAGE ─────────────────────────
+
 var SK = 'hl_res_v3';
-function loadAll() {
-  try { return JSON.parse(localStorage.getItem(SK) || '[]'); } catch(e) { return []; }
+
+function startFirebaseSync() {
+  db.collection(RES_COLLECTION).onSnapshot(function(snapshot) {
+    RES_CACHE = [];
+
+    snapshot.forEach(function(doc) {
+  var data = doc.data();
+  data.id = doc.id;
+  RES_CACHE.push(data);
+});
+
+saveLocalBackup(RES_CACHE);
+
+renderWeek();
+    }
+
+  }, function(error) {
+    console.error("Firebase failed, fallback to local:", error);
+    RES_CACHE = loadLocalBackup();
+    renderWeek();
+  });
 }
-function saveAll(a) { localStorage.setItem(SK, JSON.stringify(a)); }
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-function wISO() { return toISO(weekMon); }
+
+function loadAll() {
+  return RES_CACHE || [];
+}
+
+function loadLocalBackup() {
+  try {
+    return JSON.parse(localStorage.getItem(SK) || '[]');
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveLocalBackup(a) {
+  localStorage.setItem(SK, JSON.stringify(a));
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+
+function wISO() {
+  return toISO(weekMon);
+}
 function getSlots() {
   var iso = wISO(), all = loadAll(), s = {};
+
   for (var i = 0; i < 7; i++) s[i] = [];
-  all.filter(function(r) { return r.weekISO === iso; }).forEach(function(r) {
+
+  all.filter(function(r) {
+    return r.weekISO === iso;
+  }).forEach(function(r) {
     if (!s[r.dayIdx]) s[r.dayIdx] = [];
     s[r.dayIdx].push(r);
   });
-  for (var i = 0; i < 7; i++) s[i].sort(function(a,b) { return (a.time||'').localeCompare(b.time||''); });
+
+  for (var i = 0; i < 7; i++) {
+    s[i].sort(function(a,b) {
+      return (a.time || '').localeCompare(b.time || '');
+    });
+  }
+
   return s;
 }
-
 // ─── RENDER WEEK ──────────────────────────────
 function renderWeek() {
   document.getElementById('wklbl').textContent = fmtWeek(weekMon);
@@ -975,17 +1050,14 @@ function bgClose(e) { if (e.target === document.getElementById('overlay')) close
 
 function saveRes() {
   var name = document.getElementById('f-name').value.trim();
+
   if (!name) {
     goStep(0);
-    setTimeout(function() {
-      var el = document.getElementById('f-name');
-      el.style.borderColor = '#dc2626'; el.focus();
-      setTimeout(function() { el.style.borderColor = ''; }, 1600);
-    }, 50);
     return;
   }
-  var all = loadAll();
+
   var now = new Date().toISOString();
+
   var data = {
     name: name,
     phone: document.getElementById('f-phone').value.trim(),
@@ -994,23 +1066,32 @@ function saveRes() {
     size: document.getElementById('f-size').value,
     kids: document.getElementById('f-kids').value,
     occasion: document.getElementById('f-occasion').value.trim(),
-    status: mStat, mgrName: me, mgrTime: now
+    status: mStat,
+    mgrName: me,
+    mgrTime: now,
+    weekISO: wISO(),
+    dayIdx: mDayIdx,
+    updatedAt: now
   };
+
   if (mId) {
-    for (var i = 0; i < all.length; i++) {
-      if (all[i].id === mId) { all[i] = Object.assign({}, all[i], data); break; }
-    }
+    db.collection(RES_COLLECTION).doc(mId).set(data, { merge: true });
   } else {
-    data.id = uid(); data.weekISO = wISO(); data.dayIdx = mDayIdx;
-    all.push(data);
+    data.createdAt = now;
+    data.id = uid();
+    db.collection(RES_COLLECTION).doc(data.id).set(data);
   }
-  saveAll(all); closeModal(); renderWeek();
+
+  closeModal();
 }
+     
 
 function delRes() {
   if (!confirm('Remove this reservation permanently?')) return;
-  var all = loadAll().filter(function(r) { return r.id !== mId; });
-  saveAll(all); closeModal(); renderWeek();
+
+  db.collection(RES_COLLECTION).doc(mId).delete();
+
+  closeModal();
 }
 
 // ─── GUEST BOOK ───────────────────────────────
@@ -1072,7 +1153,10 @@ document.addEventListener('keydown', function(e) {
     }
   }
 });
+startFirebaseSync();
+
+
 </script>
 
 </body>
-</html>s
+</html>
