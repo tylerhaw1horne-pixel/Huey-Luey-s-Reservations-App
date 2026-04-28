@@ -429,7 +429,24 @@ border-radius: 9px; padding: 10px 14px; cursor: pointer; transition: all 0.15s;
 -webkit-appearance: none;
 }
 .btn-remove:hover { background: #fee2e2; }
-
+.recovery-box{
+  position:fixed;inset:20px;z-index:9999;background:#f6f1e8;
+  border:3px solid #1e7f4f;border-radius:16px;
+  box-shadow:0 20px 70px rgba(0,0,0,.35);
+  display:none;flex-direction:column;overflow:hidden;
+}
+.recovery-box.open{display:flex;}
+.recovery-head{
+  background:#1e7f4f;color:#fff;padding:14px 18px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.recovery-title{font-weight:800;font-size:16px;text-transform:uppercase;}
+.recovery-body{padding:14px;overflow:auto;flex:1;}
+.recovery-actions{display:flex;gap:8px;padding:12px;background:#fff;border-top:1px solid #ddd;}
+.recovery-table{width:100%;border-collapse:collapse;background:#fff;}
+.recovery-table th{background:#d35400;color:#fff;font-size:9px;padding:8px;text-align:left;}
+.recovery-table td{font-size:11px;padding:8px;border-bottom:1px solid #e2d8cc;}
+.recovery-note{font-size:12px;font-weight:700;color:#6b7280;margin-bottom:10px;}
 @media print {
 #login-screen, .tab-bar, .app-footer, .add-btn, .app-topbar-left, .today-btn, #view-gb { display: none !important; }
 #app { display: flex !important; position: static; overflow: visible; height: auto; }
@@ -484,6 +501,7 @@ border-radius: 9px; padding: 10px 14px; cursor: pointer; transition: all 0.15s;
     <div class="app-topbar-left">
       <button class="tbtn" onclick="window.print()">&#128438; Print</button>
       <button class="tbtn red" onclick="logout()">Sign Out</button>
+      <button class="tbtn" onclick="openRecoveryUI()">Recovery</button>
     </div>
     <div class="app-topbar-name">Huey Luey's</div>
     <div class="app-topbar-sub">Reservation Manager</div>
@@ -680,6 +698,32 @@ border-radius: 9px; padding: 10px 14px; cursor: pointer; transition: all 0.15s;
 
   </div>
 </div>
+<div class="recovery-box" id="recovery-box">
+  <div class="recovery-head">
+    <div>
+      <div class="recovery-title">Local Storage Recovery</div>
+      <div style="font-size:10px;opacity:.75;">Find old iPad saved reservations and push them to Firebase</div>
+    </div>
+    <button class="tbtn red" onclick="closeRecoveryUI()">Close</button>
+  </div>
+
+  <div class="recovery-body">
+    <div class="recovery-note" id="recovery-note">Checking local storage…</div>
+    <table class="recovery-table">
+      <thead>
+        <tr>
+          <th>Key</th><th>Name</th><th>Date</th><th>Time</th><th>Party</th><th>Phone</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="recovery-body"></tbody>
+    </table>
+  </div>
+
+  <div class="recovery-actions">
+    <button class="btn-next grn-btn" onclick="pushRecoveredToFirebase()">Push Found Records to Firebase</button>
+    <button class="btn-back" onclick="downloadRecoveredJSON()">Download Backup JSON</button>
+  </div>
+</div>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 
@@ -776,58 +820,10 @@ function logout() {
   document.getElementById('host-pill').innerHTML = '';
 }
 
-// ─── DATES ───────────────────────────────────
-function getMonday(d) {
-  var x = new Date(d); x.setHours(0,0,0,0);
-  var day = x.getDay();
-  x.setDate(x.getDate() + (day === 0 ? -6 : 1 - day));
-  return x;
-}
-function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
-function toISO(d) {
-  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
-}
-function pad(n) { return n < 10 ? '0' + n : '' + n; }
-var MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var DN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-function fmtWeek(m) {
-  var s = addDays(m, 6);
-  var o = {month:'short', day:'numeric'};
-  return m.toLocaleDateString('en-US', o) + ' \u2013 ' + s.toLocaleDateString('en-US', o) + ', ' + s.getFullYear();
-}
-function fmtDate(iso) {
-  if (!iso) return '\u2014';
-  var p = iso.split('-');
-  return MO[parseInt(p[1])-1] + ' ' + parseInt(p[2]) + ', ' + p[0];
-}
-function fmtTime(t) {
-  if (!t) return '';
-  var p = t.split(':'); var h = parseInt(p[0]); var m = p[1];
-  return (h % 12 || 12) + ':' + m + ' ' + (h >= 12 ? 'PM' : 'AM');
-}
-function fmtDT(iso) {
-  if (!iso) return '';
-  var d = new Date(iso);
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-}
-
-// ─── WEEK ─────────────────────────────────────
-var weekMon = getMonday(new Date());
-function cw(dir) { weekMon = addDays(weekMon, dir * 7); renderWeek(); }
-function gotoToday() { weekMon = getMonday(new Date()); renderWeek(); }
-
-// ─── TABS ─────────────────────────────────────
-function showTab(t) {
-  document.getElementById('view-week').classList.toggle('active', t === 'week');
-  document.getElementById('view-gb').classList.toggle('active', t === 'gb');
-  document.getElementById('tab-week').classList.toggle('active', t === 'week');
-  document.getElementById('tab-gb').classList.toggle('active', t === 'gb');
-  if (t === 'gb') renderGB();
-}
-
-// ─── FIREBASE STORAGE ─────────────────────────
 var SK = 'hl_res_v3';
+var OLD_KEYS = ['hl_res_v3', 'hl_res_v2', 'hl_res_v1', 'reservations', 'huey_reservations'];
 var syncStarted = false;
+var RECOVERY_CACHE = [];
 
 function startFirebaseSync() {
   db.collection(RES_COLLECTION).onSnapshot(function(snapshot) {
@@ -846,13 +842,6 @@ function startFirebaseSync() {
       renderGB();
     }
 
-  }, function(error) {
-    console.error("Firebase failed, fallback to local:", error);
-    RES_CACHE = loadLocalBackup();
-    renderWeek();
-  });
-}
-
 function loadAll() {
   return RES_CACHE || [];
 }
@@ -867,6 +856,198 @@ function loadLocalBackup() {
 
 function saveLocalBackup(a) {
   localStorage.setItem(SK, JSON.stringify(a));
+}
+
+function loadOldLocalReservationsDetailed() {
+  var found = [];
+
+  OLD_KEYS.forEach(function(key) {
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) return;
+
+      var arr = JSON.parse(raw);
+
+      if (Array.isArray(arr)) {
+        arr.forEach(function(r) {
+          if (r && r.name) {
+            var fixed = fixOldReservationShape(r);
+            fixed._localKey = key;
+            found.push(fixed);
+          }
+        });
+      }
+    } catch(e) {
+      console.warn('Could not read local key:', key, e);
+    }
+  });
+
+  var map = {};
+  found.forEach(function(r) {
+    var safeId = r.id || uid();
+    r.id = safeId;
+    map[safeId] = r;
+  });
+
+  return Object.values(map);
+}
+
+function fixOldReservationShape(r) {
+  var copy = Object.assign({}, r);
+
+  if (!copy.id) copy.id = uid();
+  if (!copy.date && copy.dayDate) copy.date = copy.dayDate;
+
+  if (copy.date && !copy.weekISO) {
+    copy.weekISO = toISO(getMonday(new Date(copy.date + 'T12:00:00')));
+  }
+
+  if (copy.date && (copy.dayIdx === undefined || copy.dayIdx === null || copy.dayIdx === '')) {
+    var d = new Date(copy.date + 'T12:00:00');
+    var jsDay = d.getDay();
+    copy.dayIdx = jsDay === 0 ? 6 : jsDay - 1;
+  }
+
+  if (!copy.status) copy.status = 'confirmed';
+  if (!copy.updatedAt) copy.updatedAt = new Date().toISOString();
+
+  return copy;
+}
+
+function openRecoveryUI() {
+  RECOVERY_CACHE = loadOldLocalReservationsDetailed();
+
+  var box = document.getElementById('recovery-box');
+  var note = document.getElementById('recovery-note');
+  var body = document.getElementById('recovery-body');
+
+  body.innerHTML = '';
+
+  note.textContent = RECOVERY_CACHE.length
+    ? RECOVERY_CACHE.length + ' old local reservation record(s) found on this device/browser.'
+    : 'No old local reservations found on this device/browser.';
+
+  RECOVERY_CACHE.forEach(function(r) {
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td>' + esc(r._localKey || '') + '</td>' +
+      '<td><strong>' + esc(r.name || '') + '</strong></td>' +
+      '<td>' + esc(r.date || '') + '</td>' +
+      '<td>' + esc(r.time || '') + '</td>' +
+      '<td>' + esc(r.size || '') + '</td>' +
+      '<td>' + esc(r.phone || '') + '</td>' +
+      '<td>' + esc(r.status || '') + '</td>';
+    body.appendChild(tr);
+  });
+
+  box.classList.add('open');
+}
+
+function closeRecoveryUI() {
+  document.getElementById('recovery-box').classList.remove('open');
+}
+
+async function pushRecoveredToFirebase() {
+  if (!RECOVERY_CACHE.length) {
+    alert('No local records found to push.');
+    return;
+  }
+
+  if (!confirm('Push ' + RECOVERY_CACHE.length + ' recovered local record(s) into Firebase?')) return;
+
+  var batch = db.batch();
+
+  RECOVERY_CACHE.forEach(function(r) {
+    var clean = Object.assign({}, r);
+    delete clean._localKey;
+
+    var ref = db.collection(RES_COLLECTION).doc(clean.id);
+    batch.set(ref, clean, { merge: true });
+  });
+
+  await batch.commit();
+
+  alert('Recovery complete. Records pushed to Firebase.');
+  closeRecoveryUI();
+}
+
+function downloadRecoveredJSON() {
+  RECOVERY_CACHE = loadOldLocalReservationsDetailed();
+
+  var blob = new Blob([JSON.stringify(RECOVERY_CACHE, null, 2)], {
+    type: 'application/json'
+  });
+
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'hueys-local-reservation-recovery.json';
+  a.click();
+}
+
+  }, function(error) {
+    console.error("Firebase failed, fallback to local:", error);
+    RES_CACHE = loadOldLocalReservations().map(fixOldReservationShape);
+    renderWeek();
+  });
+}
+
+// ─── DATES ───────────────────────────────────
+function getMonday(d) {
+  var x = new Date(d); x.setHours(0,0,0,0);
+  var day = x.getDay();
+  x.setDate(x.getDate() + (day === 0 ? -6 : 1 - day));
+  return x;
+}
+function addDays(d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
+function toISO(d) {
+  return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+}
+
+var MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DN = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+function fmtWeek(m) {
+  var s = addDays(m, 6);
+  var o = {month:'short', day:'numeric'};
+  return m.toLocaleDateString('en-US', o) + ' – ' + s.toLocaleDateString('en-US', o) + ', ' + s.getFullYear();
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  var p = iso.split('-');
+  return MO[parseInt(p[1])-1] + ' ' + parseInt(p[2]) + ', ' + p[0];
+}
+function fmtTime(t) {
+  if (!t) return '';
+  var p = t.split(':'); var h = parseInt(p[0]); var m = p[1];
+  return (h % 12 || 12) + ':' + m + ' ' + (h >= 12 ? 'PM' : 'AM');
+}
+function fmtDT(iso) {
+  if (!iso) return '';
+  var d = new Date(iso);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' ' +
+    d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+}
+
+// ─── WEEK ─────────────────────────────────────
+var weekMon = getMonday(new Date());
+
+function cw(dir) {
+  weekMon = addDays(weekMon, dir * 7);
+  renderWeek();
+}
+function gotoToday() {
+  weekMon = getMonday(new Date());
+  renderWeek();
+}
+
+// ─── TABS ─────────────────────────────────────
+function showTab(t) {
+  document.getElementById('view-week').classList.toggle('active', t === 'week');
+  document.getElementById('view-gb').classList.toggle('active', t === 'gb');
+  document.getElementById('tab-week').classList.toggle('active', t === 'week');
+  document.getElementById('tab-gb').classList.toggle('active', t === 'gb');
+  if (t === 'gb') renderGB();
 }
 
 function uid() {
