@@ -891,46 +891,78 @@ function postToSheets(payload, successMsg){
 }
 
 function sheetMeta(){
-  return {manager: me || "", device: navigator.userAgent || "", source: "website"};
+  return {
+    manager: me || "",
+    device: navigator.userAgent || "",
+    source: "website"
+  };
 }
 
 function backupReservationToSheets(r){
   if(!r || !r.id) return Promise.resolve(false);
-  return postToSheets({action:"upsert", record:r, meta:sheetMeta()}, "Backed up");
+
+  return postToSheets({
+    action: "backupReservation",
+    reservation: r,
+    meta: sheetMeta()
+  }, "Backed up");
+}
+
+function deleteReservationFromSheets(r){
+  if(!r || !r.id) return Promise.resolve(false);
+
+  return postToSheets({
+    action: "deleteReservation",
+    id: r.id,
+    reservation: r,
+    meta: sheetMeta()
+  }, "Sheet deleted");
 }
 
 function emailReservationViaScript(r, toEmail, message){
   if(!r || !r.id) return Promise.resolve(false);
+
   var copy = Object.assign({}, r);
-  copy.logoDataUrl = LOGO_DATA_URL;
+
   return postToSheets({
-    action:"emailReservationConfirmation",
-    meta:sheetMeta(),
-    reservation:copy,
-    recipientEmail:toEmail || copy.email || ""
+    action: "sendReservationEmail",
+    reservation: copy,
+    recipientEmail: toEmail || copy.email || "",
+    managerCopy: SELF_EMAIL,
+    logoDataUrl: LOGO_DATA_URL,
+    meta: sheetMeta()
   }, message || "Email requested");
 }
 
 function syncAllToSheets(){
   var all = loadAll();
+
   if(!all.length){
     alert("No reservations to sync.");
     return;
   }
+
   if(!confirm("Sync all " + all.length + " reservation records to the Google Sheet backup?")) return;
 
   var i = 0;
+
   function next(){
     if(i >= all.length){
       showToast("All synced to Sheets");
       alert("All current records were sent to the Google Sheets backup.");
       return;
     }
-    postToSheets({action:"upsert", record:all[i], meta:sheetMeta()}, "Backed up").finally(function(){
+
+    postToSheets({
+      action: "backupReservation",
+      reservation: all[i],
+      meta: sheetMeta()
+    }, "Backed up").finally(function(){
       i++;
       setTimeout(next, 90);
     });
   }
+
   next();
 }
 
@@ -1577,7 +1609,7 @@ function delRes(){
   r.deleted = true;
   r.updatedAt = new Date().toISOString();
 
-  postToSheets({action:"delete", record:r, meta:sheetMeta()}, "Sheet marked deleted");
+ deleteReservationFromSheets(r);
 
   if(db){
     db.collection(RES_COLLECTION).doc(mId).delete()
